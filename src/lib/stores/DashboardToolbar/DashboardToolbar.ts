@@ -32,6 +32,14 @@ class StoreClass {
         });
     }
 
+    private setTracingSettings(
+        callback: ActionProduceCallback<State["settings"]["tracing"], State>
+    ) {
+        this.state.set(draft => {
+            draft.settings.tracing = callback(draft.settings.tracing, draft);
+        });
+    }
+
     readonly actions = {
         settings: {
             viewport: {
@@ -83,6 +91,55 @@ class StoreClass {
                     this.setCursorSettings(
                         produce(cursor => {
                             cursor.mode = mode;
+                        })
+                    );
+                    this.setTracingSettings(
+                        produce(tracing => {
+                            tracing.isEnabled = mode === "tracing";
+                        })
+                    );
+                },
+            },
+            tracing: {
+                setIsEnabled: (isEnabled: boolean) => {
+                    this.setTracingSettings(
+                        produce(tracing => {
+                            tracing.isEnabled = isEnabled;
+                        })
+                    );
+                },
+                toggleIsEnabled: () => {
+                    this.setTracingSettings(
+                        produce(tracing => {
+                            tracing.isEnabled = !tracing.isEnabled;
+                        })
+                    );
+                },
+                setColor: (color: string) => {
+                    this.setTracingSettings(
+                        produce(tracing => {
+                            tracing.color = color;
+                        })
+                    );
+                },
+                setOpacity: (opacity: number) => {
+                    this.setTracingSettings(
+                        produce(tracing => {
+                            tracing.opacity = opacity;
+                        })
+                    );
+                },
+                setBrushSize: (brushSize: number) => {
+                    this.setTracingSettings(
+                        produce(tracing => {
+                            tracing.brushSize = brushSize;
+                        })
+                    );
+                },
+                setMode: (mode: "free" | "line") => {
+                    this.setTracingSettings(
+                        produce(tracing => {
+                            tracing.mode = mode;
                         })
                     );
                 },

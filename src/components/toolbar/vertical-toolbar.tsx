@@ -16,6 +16,7 @@ import {
     RotateCw,
     Crosshair,
     Settings,
+    Brush,
     Ruler,
     Eye,
     EyeOff,
@@ -34,6 +35,7 @@ import {
 import { ReportDialog } from "@/components/dialogs/report/report-dialog";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { RotationPanel } from "./rotation-panel";
+import { TracingPanel } from "./tracing-panel";
 import { MeasurementPanel } from "./measurement-panel";
 
 export type VerticalToolbarProps = HTMLAttributes<HTMLDivElement>;
@@ -143,6 +145,24 @@ export function VerticalToolbar({ className, ...props }: VerticalToolbarProps) {
                             {t("Mode.Rotation", { ns: "cursor" })}
                         </span>
                     </ToggleGroupItem>
+                    <ToggleGroupItem
+                        value={CURSOR_MODES.TRACING}
+                        className="w-full justify-start gap-2"
+                        onClick={() => {
+                            DashboardToolbarStore.actions.settings.cursor.setCursorMode(
+                                CURSOR_MODES.TRACING
+                            );
+                        }}
+                    >
+                        <Brush
+                            className="flex-shrink-0"
+                            size={ICON.SIZE}
+                            strokeWidth={ICON.STROKE_WIDTH}
+                        />
+                        <span className="text-sm">
+                            {t("Mode.Tracing", { ns: "cursor" })}
+                        </span>
+                    </ToggleGroupItem>
                 </ToggleGroup>
 
                 <div
@@ -154,6 +174,17 @@ export function VerticalToolbar({ className, ...props }: VerticalToolbarProps) {
                     )}
                 >
                     <RotationPanel />
+                </div>
+
+                <div
+                    className={cn(
+                        "overflow-hidden transition-all duration-300 ease-in-out",
+                        cursorMode === CURSOR_MODES.TRACING
+                            ? "max-h-96 opacity-100 mt-2"
+                            : "max-h-0 opacity-0"
+                    )}
+                >
+                    <TracingPanel />
                 </div>
             </div>
 

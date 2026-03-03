@@ -44,6 +44,13 @@ export type i18nKeywords = Recordify<
     | "Themes imported successfully"
     | "Invalid themes file"
     | "Failed to import themes"
+    | "Free"
+    | "Line"
+    | "Color"
+    | "Opacity"
+    | "Thickness"
+    | "Undo"
+    | "Redo"
     | "Filters"
     | "FeatureVisibility"
     | "Report"
@@ -82,7 +89,7 @@ export type i18nDescription = Recordify<
 export type i18nModes = Recordify<WORKING_MODE>;
 
 export type i18nCursor = {
-    Mode: Recordify<"Selection" | "Marking" | "Rotation" | "Measurement">;
+    Mode: Recordify<"Selection" | "Marking" | "Rotation" | "Measurement" | "Tracing">;
 };
 
 export type i18nObject = {
@@ -150,6 +157,14 @@ export type i18nTooltip = Recordify<
     | "Rotation instructions"
     | "Calculate and align"
     | "Reset rotation panel"
+    | "Toggle tracing mode"
+    | "Line mode instruction"
+    | "Save tracing data to a JSON file"
+    | "Tracing data saved"
+    | "Failed to save tracing data"
+    | "Load tracing data from file"
+    | "Tracing data loaded"
+    | "Failed to load tracing data"
     | "Measurement instructions"
     | "Clear measurement"
     | "Brightness"
@@ -188,6 +203,8 @@ export type i18nDialog = Recordify<
     | "Invalid markings data file"
     | "Are you sure?"
     | "Warning"
+    | "Invalid tracing data file"
+    | "Are you sure you want to load tracing data?\n\nIt will replace current drawing."
 >;
 
 export type i18nKeybindings = Recordify<
