@@ -21,6 +21,8 @@ export type i18nKeywords = Recordify<
     | "Remove"
     | "Add"
     | "Tools"
+    | "Edit Image"
+    | "Adjustments"
     | "About"
     | "Version"
     | "Description"
@@ -49,6 +51,27 @@ export type i18nKeywords = Recordify<
     | "Thickness"
     | "Undo"
     | "Redo"
+    | "Filters"
+    | "FeatureVisibility"
+    | "Report"
+    | "Report settings"
+    | "Report ID"
+    | "Report date and time"
+    | "Performed by"
+    | "Department"
+    | "Address line 1"
+    | "Address line 2"
+    | "Address line 3"
+    | "Address line 4"
+    | "Use current date and time"
+    | "Generate report"
+    | "Report generation"
+    | "Max features"
+    | "Include matched only"
+    | "Matched features"
+    | "Selected features"
+    | "Cancel"
+    | "Generating..."
 >;
 
 export type i18nDescription = Recordify<
@@ -58,12 +81,15 @@ export type i18nDescription = Recordify<
     | "Application for forensic trace comparison"
     | "Open settings"
     | "Create and manage custom color themes"
+    | "Configure report metadata"
+    | "Configure default report data"
+    | "Generate PDF report"
 >;
 
 export type i18nModes = Recordify<WORKING_MODE>;
 
 export type i18nCursor = {
-    Mode: Recordify<"Selection" | "Marking" | "Rotation" | "Tracing">;
+    Mode: Recordify<"Selection" | "Marking" | "Rotation" | "Measurement" | "Tracing">;
 };
 
 export type i18nObject = {
@@ -100,6 +126,10 @@ export type i18nObject = {
         Name: string;
         Keys: Recordify<THEMES>;
     };
+    Calibration: {
+        Unit: string;
+        Scale: string;
+    };
 };
 
 export type i18nTooltip = Recordify<
@@ -114,10 +144,15 @@ export type i18nTooltip = Recordify<
     | "Toggle scale mode"
     | "Toggle marking labels"
     | "Toggle viewport information"
+    | "Edit mode"
     | "Export marking types"
     | "Import marking types"
     | "Markings data saved"
     | "Failed to save markings data"
+    | "Image saved successfully"
+    | "Failed to save image: {{error}}"
+    | "Image saved successfully, but could not be reloaded due to path restrictions"
+    | "Save"
     | "Auto rotate"
     | "Rotation instructions"
     | "Calculate and align"
@@ -130,6 +165,19 @@ export type i18nTooltip = Recordify<
     | "Load tracing data from file"
     | "Tracing data loaded"
     | "Failed to load tracing data"
+    | "Measurement instructions"
+    | "Clear measurement"
+    | "Brightness"
+    | "Contrast"
+    | "Reset Zoom"
+    | "ImageLoadPermissionError"
+    | "Generate report"
+    | "Report generated"
+    | "Failed to generate report"
+    | "Rotate left"
+    | "Rotate right"
+    | "Reset rotation"
+    | "Synchronize rotation"
 >;
 
 export type i18nDialog = Recordify<
@@ -166,4 +214,38 @@ export type i18nKeybindings = Recordify<
     | "Press a numeric key (0-9)"
     | "Press 'Del' to remove keybinding"
     | "'{{key}}' is not a  numeric key"
+>;
+
+export type i18nReport = Recordify<
+    | "Technical report title"
+    | "Report ID label"
+    | "Report date and time label"
+    | "Performed by label"
+    | "Software information"
+    | "Application name"
+    | "Application version"
+    | "Input material"
+    | "Image 1"
+    | "Image 2"
+    | "File name"
+    | "Image dimensions"
+    | "Dimensions"
+    | "Size"
+    | "Checksum"
+    | "Matched features count"
+    | "Selected features count"
+    | "Figure 1"
+    | "Figure 2"
+    | "Figure 3"
+    | "Figure 4"
+    | "Image 1 label"
+    | "Image 2 label"
+    | "Comparative table overview"
+    | "Comparative table zoom"
+    | "Comparative table details"
+    | "Feature"
+    | "Feature type"
+    | "Page"
+    | "Note title"
+    | "Note body"
 >;

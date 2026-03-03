@@ -1,7 +1,9 @@
 import { Container } from "@pixi/react";
 import { MarkingsStore } from "@/lib/stores/Markings";
 import { AutoRotateStore } from "@/lib/stores/AutoRotate/AutoRotate";
+import { MeasurementStore } from "@/lib/stores/Measurement/Measurement";
 import { RotationStore } from "@/lib/stores/Rotation/Rotation";
+import { MarkingTypesStore } from "@/lib/stores/MarkingTypes/MarkingTypes";
 import { ShallowViewportStore } from "@/lib/stores/ShallowViewport";
 import * as PIXI from "pixi.js";
 import { CanvasMetadata } from "../canvas/hooks/useCanvasContext";
@@ -29,6 +31,12 @@ export function MarkingOverlay({ canvasMetadata }: MarkingOverlayProps) {
         }
     );
 
+    const hiddenTypes = MarkingTypesStore.use(state => state.hiddenTypes);
+
+    const visibleMarkings = markings.filter(
+        marking => !hiddenTypes.includes(marking.typeId)
+    );
+
     const temporaryMarking = MarkingsStore(canvasId).use(
         state => state.temporaryMarking
     );
@@ -39,6 +47,16 @@ export function MarkingOverlay({ canvasMetadata }: MarkingOverlayProps) {
     );
 
     const finishedAutoRotateLine = AutoRotateStore.use(
+        // eslint-disable-next-line security/detect-object-injection
+        state => state.finishedLines[canvasId]
+    );
+
+    const tempMeasurementLine = MeasurementStore.use(
+        // eslint-disable-next-line security/detect-object-injection
+        state => state.tempLines[canvasId]
+    );
+
+    const finishedMeasurementLine = MeasurementStore.use(
         // eslint-disable-next-line security/detect-object-injection
         state => state.finishedLines[canvasId]
     );
@@ -76,7 +94,7 @@ export function MarkingOverlay({ canvasMetadata }: MarkingOverlayProps) {
         <Container position={getViewportPosition(viewport)}>
             <Markings
                 canvasId={canvasId}
-                markings={markings}
+                markings={visibleMarkings}
                 rotation={rotation}
                 centerX={centerX}
                 centerY={centerY}
@@ -108,6 +126,28 @@ export function MarkingOverlay({ canvasMetadata }: MarkingOverlayProps) {
                 <Markings
                     canvasId={canvasId}
                     markings={[finishedAutoRotateLine]}
+                    alpha={1}
+                    rotation={rotation}
+                    centerX={centerX}
+                    centerY={centerY}
+                />
+            )}
+            {/* If measurement line is being drawn, display it */}
+            {tempMeasurementLine && (
+                <Markings
+                    canvasId={canvasId}
+                    markings={[tempMeasurementLine]}
+                    alpha={1}
+                    rotation={rotation}
+                    centerX={centerX}
+                    centerY={centerY}
+                />
+            )}
+            {/* If finished measurement line exists, display it */}
+            {finishedMeasurementLine && (
+                <Markings
+                    canvasId={canvasId}
+                    markings={[finishedMeasurementLine]}
                     alpha={1}
                     rotation={rotation}
                     centerX={centerX}

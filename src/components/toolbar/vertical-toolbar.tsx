@@ -17,6 +17,9 @@ import {
     Crosshair,
     Settings,
     Brush,
+    Ruler,
+    Eye,
+    EyeOff,
 } from "lucide-react";
 import { ICON } from "@/lib/utils/const";
 import { useTranslation } from "react-i18next";
@@ -29,9 +32,11 @@ import {
     DropdownMenuPortal,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ReportDialog } from "@/components/dialogs/report/report-dialog";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { RotationPanel } from "./rotation-panel";
 import { TracingPanel } from "./tracing-panel";
+import { MeasurementPanel } from "./measurement-panel";
 
 export type VerticalToolbarProps = HTMLAttributes<HTMLDivElement>;
 
@@ -42,10 +47,14 @@ export function VerticalToolbar({ className, ...props }: VerticalToolbarProps) {
         state => state.settings.cursor
     );
 
-    const { locked: isViewportLocked, scaleSync: isViewportScaleSync } =
-        DashboardToolbarStore.use(state => state.settings.viewport);
+    const {
+        locked: isViewportLocked,
+        scaleSync: isViewportScaleSync,
+        rotationSync: isRotationSync,
+    } = DashboardToolbarStore.use(state => state.settings.viewport);
 
     const availableMarkingTypes = MarkingTypesStore.use(state => state.types);
+    const hiddenTypes = MarkingTypesStore.use(state => state.hiddenTypes);
 
     const workingMode = WorkingModeStore.use(state => state.workingMode);
 
@@ -186,14 +195,89 @@ export function VerticalToolbar({ className, ...props }: VerticalToolbarProps) {
                     <h3 className="text-xs font-semibold">
                         {t("Types", { ns: "keywords" })}
                     </h3>
-                    <button
-                        type="button"
-                        onClick={openTypesSettings}
-                        className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground"
-                        title={t("Types", { ns: "keywords" })}
-                    >
-                        <Settings size={16} strokeWidth={ICON.STROKE_WIDTH} />
-                    </button>
+                    <div className="flex items-center gap-1">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    type="button"
+                                    className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground"
+                                    title={t("Filters", { ns: "keywords" })}
+                                >
+                                    <Eye
+                                        size={16}
+                                        strokeWidth={ICON.STROKE_WIDTH}
+                                    />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                side="right"
+                                align="start"
+                                className="w-64 p-4 z-[9999]"
+                            >
+                                <div className="space-y-4">
+                                    <h4 className="font-medium leading-none text-sm">
+                                        {t("FeatureVisibility", {
+                                            ns: "keywords",
+                                        })}
+                                    </h4>
+                                    <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto pr-2">
+                                        {availableMarkingTypes.map(type => (
+                                            <div
+                                                key={type.id}
+                                                className="flex items-center justify-between"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <div
+                                                        className="w-3 h-3 rounded-sm flex-shrink-0"
+                                                        style={{
+                                                            backgroundColor:
+                                                                type.backgroundColor as string,
+                                                        }}
+                                                    />
+                                                    <span className="text-sm">
+                                                        {type.displayName}
+                                                    </span>
+                                                </div>
+                                                <Toggle
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="h-7 px-2"
+                                                    pressed={hiddenTypes.includes(
+                                                        type.id
+                                                    )}
+                                                    onClick={e => {
+                                                        e.preventDefault();
+                                                        MarkingTypesStore.actions.visibility.toggle(
+                                                            type.id
+                                                        );
+                                                    }}
+                                                >
+                                                    {hiddenTypes.includes(
+                                                        type.id
+                                                    ) ? (
+                                                        <EyeOff size={14} />
+                                                    ) : (
+                                                        <Eye size={14} />
+                                                    )}
+                                                </Toggle>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <button
+                            type="button"
+                            onClick={openTypesSettings}
+                            className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground"
+                            title={t("Types", { ns: "keywords" })}
+                        >
+                            <Settings
+                                size={16}
+                                strokeWidth={ICON.STROKE_WIDTH}
+                            />
+                        </button>
+                    </div>
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger
@@ -304,6 +388,66 @@ export function VerticalToolbar({ className, ...props }: VerticalToolbarProps) {
                         />
                         <span className="text-sm text-left leading-tight">
                             {t("Synchronize viewports with scale", {
+                                ns: "tooltip",
+                            })}
+                        </span>
+                    </Toggle>
+
+                    <Toggle
+                        variant="outline"
+                        className="w-full justify-start gap-2 h-auto min-h-[40px] py-2 px-3"
+                        pressed={cursorMode === CURSOR_MODES.MEASUREMENT}
+                        onClick={() => {
+                            if (cursorMode === CURSOR_MODES.MEASUREMENT) {
+                                DashboardToolbarStore.actions.settings.cursor.setCursorMode(
+                                    CURSOR_MODES.SELECTION
+                                );
+                            } else {
+                                DashboardToolbarStore.actions.settings.cursor.setCursorMode(
+                                    CURSOR_MODES.MEASUREMENT
+                                );
+                            }
+                        }}
+                    >
+                        <Ruler
+                            className="flex-shrink-0"
+                            size={ICON.SIZE}
+                            strokeWidth={ICON.STROKE_WIDTH}
+                        />
+                        <span className="text-sm text-left leading-tight">
+                            {t("Mode.Measurement", { ns: "cursor" })}
+                        </span>
+                    </Toggle>
+
+                    <div
+                        className={cn(
+                            "overflow-hidden transition-all duration-300 ease-in-out",
+                            cursorMode === CURSOR_MODES.MEASUREMENT
+                                ? "max-h-96 opacity-100 mt-2"
+                                : "max-h-0 opacity-0"
+                        )}
+                    >
+                        <MeasurementPanel />
+                    </div>
+
+                    <ReportDialog />
+
+                    <Toggle
+                        variant="outline"
+                        className="w-full justify-start gap-2 h-auto min-h-[40px] py-2 px-3"
+                        pressed={isRotationSync}
+                        onClick={
+                            DashboardToolbarStore.actions.settings.viewport
+                                .toggleRotationSync
+                        }
+                    >
+                        <RotateCw
+                            className="flex-shrink-0"
+                            size={ICON.SIZE}
+                            strokeWidth={ICON.STROKE_WIDTH}
+                        />
+                        <span className="text-sm text-left leading-tight">
+                            {t("Synchronize rotation", {
                                 ns: "tooltip",
                             })}
                         </span>

@@ -4,7 +4,7 @@ import { FederatedPointerEvent } from "pixi.js";
 import { RayMarking } from "@/lib/markings/RayMarking";
 import { getNormalizedMousePosition } from "@/components/pixi/viewport/event-handlers/utils";
 import { getAngle } from "@/lib/utils/math/getAngle";
-import { MarkingModePlugin } from "@/components/pixi/viewport/plugins/markingModePlugin";
+import type { MarkingModePlugin } from "@/components/pixi/viewport/plugins/markingModePlugin";
 import { RotationStore } from "@/lib/stores/Rotation/Rotation";
 import { CANVAS_ID } from "@/components/pixi/canvas/hooks/useCanvasContext";
 import { getAdjustedPosition } from "@/components/pixi/viewport/utils/transform-point";

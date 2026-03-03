@@ -71,6 +71,20 @@ class StoreClass {
                         })
                     );
                 },
+                toggleRotationSync: () => {
+                    this.setViewportSettings(
+                        produce(settings => {
+                            settings.rotationSync = !settings.rotationSync;
+                        })
+                    );
+                },
+                setRotationSync: (state: boolean) => {
+                    this.setViewportSettings(
+                        produce(settings => {
+                            settings.rotationSync = state;
+                        })
+                    );
+                },
             },
             cursor: {
                 setCursorMode: (mode: State["settings"]["cursor"]["mode"]) => {

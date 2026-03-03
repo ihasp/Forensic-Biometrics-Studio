@@ -12,6 +12,11 @@ import {
     FileInput,
     Info,
     FileJson,
+    Edit,
+    RotateCw,
+    RotateCcw,
+    RefreshCw,
+    Wand2,
 } from "lucide-react";
 import { ICON } from "@/lib/utils/const";
 import { Toggle } from "@/components/ui/toggle";
@@ -23,6 +28,14 @@ import { saveMarkingsDataWithDialog } from "@/lib/utils/viewport/saveMarkingsDat
 import { loadMarkingsDataWithDialog } from "@/lib/utils/viewport/loadMarkingsData";
 import { saveTracingDataWithDialog } from "@/lib/utils/viewport/saveTracingDataWithDialog";
 import { loadTracingDataWithDialog } from "@/lib/utils/viewport/loadTracingDataWithDialog";
+import { invoke } from "@tauri-apps/api/core";
+import { Sprite } from "pixi.js";
+import {
+    applyRotationDelta,
+    resetRotation,
+} from "@/lib/utils/viewport/applyRotation";
+import { RotationStore } from "@/lib/stores/Rotation/Rotation";
+import { autoMarkWithSourceafis } from "@/lib/utils/viewport/autoMarkWithSourceafis";
 import { useGlobalViewport } from "../viewport/hooks/useGlobalViewport";
 import { useCanvasContext } from "./hooks/useCanvasContext";
 import {
@@ -48,6 +61,11 @@ export function CanvasHeader({ className, ...props }: CanvasHeaderProps) {
     const { setShowLabels } = markingsActions;
 
     const { setShowViewportInformation } = viewportActions;
+
+    const rotation = RotationStore(id).use(state => state.rotation);
+    const rotationDeg = Math.round(((rotation * 180) / Math.PI) * 10) / 10;
+
+    const ROTATION_STEP = (5 * Math.PI) / 180;
 
     const viewport = useGlobalViewport(id, { autoUpdate: true });
 
@@ -149,21 +167,39 @@ export function CanvasHeader({ className, ...props }: CanvasHeaderProps) {
                                 ns: "tooltip",
                             }),
                             icon: (
-                                <FileInput
+                                <FileInput                                     size={ICON.SIZE}
+                                    strokeWidth={ICON.STROKE_WIDTH}
+                                />
+                            ),
+                             onClick: () => {
+                                loadTracingDataWithDialog(viewport);
+                             },
+                        },
+                  {
+                            label: "Auto-mark (SourceAFIS)",
+                            icon: (
+                                <Wand2
                                     size={ICON.SIZE}
                                     strokeWidth={ICON.STROKE_WIDTH}
                                 />
                             ),
-                            onClick: () => {
-                                loadTracingDataWithDialog(viewport);
+                            onClick: async () => {
+                                try {
+                                    // eslint-disable-next-line no-console
+                                    console.log(
+                                        "Auto-mark clicked - starting sidecar"
+                                    );
+                                    await autoMarkWithSourceafis(viewport);
+                                } catch (error) {
+                                    // eslint-disable-next-line no-console
+                                    console.error("Auto-mark failed:", error);
+                                }
                             },
                         },
                     ]}
                     size="icon"
                     variant="outline"
                 />
-
-                <div className="h-5 w-px bg-border/40 mx-0.5" />
 
                 <SplitButton
                     mainAction={{
@@ -210,9 +246,86 @@ export function CanvasHeader({ className, ...props }: CanvasHeaderProps) {
                     size="icon"
                     variant="outline"
                 />
+                <div className="h-5 w-px bg-border/40 mx-0.5" />
+
+                <Button
+                    title={t("Rotate left", { ns: "tooltip" })}
+                    size="icon"
+                    variant="outline"
+                    onClick={() => {
+                        applyRotationDelta(id, -ROTATION_STEP);
+                    }}
+                >
+                    <RotateCcw
+                        size={ICON.SIZE}
+                        strokeWidth={ICON.STROKE_WIDTH}
+                    />
+                </Button>
+
+                <Button
+                    title={t("Rotate right", { ns: "tooltip" })}
+                    size="icon"
+                    variant="outline"
+                    onClick={() => {
+                        applyRotationDelta(id, ROTATION_STEP);
+                    }}
+                >
+                    <RotateCw
+                        size={ICON.SIZE}
+                        strokeWidth={ICON.STROKE_WIDTH}
+                    />
+                </Button>
+
+                <span className="text-xs font-mono min-w-[3rem] text-center tabular-nums">
+                    {rotationDeg}&deg;
+                </span>
+
+                <Button
+                    title={t("Reset rotation", { ns: "tooltip" })}
+                    size="icon"
+                    variant="outline"
+                    onClick={() => {
+                        resetRotation(id);
+                    }}
+                    disabled={rotation === 0}
+                >
+                    <RefreshCw
+                        size={ICON.SIZE}
+                        strokeWidth={ICON.STROKE_WIDTH}
+                    />
+                </Button>
             </div>
 
             <div className="flex items-center gap-1.5">
+                <Toggle
+                    variant="outline"
+                    title={t("Edit mode", {
+                        ns: "tooltip",
+                    })}
+                    size="icon"
+                    disabled={!viewport.children.find(x => x instanceof Sprite)}
+                    onClick={async () => {
+                        try {
+                            const sprite = viewport.children.find(
+                                x => x instanceof Sprite
+                            ) as Sprite | undefined;
+
+                            let imagePath: string | undefined;
+                            if (sprite) {
+                                // @ts-expect-error custom property
+                                imagePath = sprite.path;
+                            }
+
+                            await invoke("open_edit_window", {
+                                imagePath: imagePath || null,
+                            });
+                        } catch {
+                            /* empty */
+                        }
+                    }}
+                >
+                    <Edit size={ICON.SIZE} strokeWidth={ICON.STROKE_WIDTH} />
+                </Toggle>
                 <Toggle
                     variant="outline"
                     title={t("Toggle marking labels", {

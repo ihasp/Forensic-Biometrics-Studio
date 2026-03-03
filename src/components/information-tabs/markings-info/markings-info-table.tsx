@@ -21,7 +21,6 @@ import {
     useRef,
     useState,
 } from "react";
-import { blinkMarking } from "@/components/pixi/overlays/markings/marking.utils";
 import { TableVirtuoso, TableVirtuosoHandle } from "react-virtuoso";
 import { cn } from "@/lib/utils/shadcn";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
@@ -101,12 +100,12 @@ const TableRowComponent = <TData,>(rows: Row<TData>[], canvasId: CANVAS_ID) => {
                             new Event(CUSTOM_GLOBAL_EVENTS.CLEANUP)
                         );
                     } else {
+                        // zaznacz
                         MarkingsStore(
                             canvasId
                         ).actions.selectedMarkingLabel.setSelectedMarkingLabel(
                             marking.label
                         );
-                        blinkMarking(marking.label, 3, 150);
                     }
                 }}
                 {...props}
@@ -142,6 +141,14 @@ function SortingIndicator({ isSorted }: { isSorted: SortDirection | false }) {
                 }[isSorted]
             }
         </div>
+    );
+}
+
+function FixedFooter() {
+    return (
+        <TableRow className="h-8 border-0">
+            <TableCell className="p-0 border-0" />
+        </TableRow>
     );
 }
 
@@ -272,6 +279,7 @@ export const MarkingsInfoTable = function <TData, TValue>({
                     </TableRow>
                 ))
             }
+            fixedFooterContent={FixedFooter}
         />
     );
 };

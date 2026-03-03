@@ -13,6 +13,7 @@ export const enum CURSOR_MODES {
     MARKING = "marking",
     AUTOROTATE = "autorotate",
     TRACING = "tracing",
+    MEASUREMENT = "measurement",
 }
 
 type Settings = {
@@ -25,6 +26,7 @@ type Settings = {
     viewport: {
         locked: boolean;
         scaleSync: boolean;
+        rotationSync: boolean;
     };
     tracing: {
         isEnabled: boolean;
@@ -50,6 +52,7 @@ const INITIAL_STATE: State = {
         viewport: {
             locked: false,
             scaleSync: false,
+            rotationSync: false,
         },
         tracing: {
             isEnabled: false,
