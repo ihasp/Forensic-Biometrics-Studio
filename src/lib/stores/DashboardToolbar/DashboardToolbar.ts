@@ -79,6 +79,11 @@ class StoreClass {
                             cursor.mode = mode;
                         })
                     );
+                    this.setTracingSettings(
+                        produce(tracing => {
+                            tracing.isEnabled = mode === "tracing";
+                        })
+                    );
                 },
             },
             tracing: {
