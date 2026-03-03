@@ -63,6 +63,15 @@ const d: Dictionary = {
     "Selected features": "Selected features",
     Cancel: "Cancel",
     "Generating...": "Generating...",
+    "FFT Spectrum Editor": "FFT Spectrum Editor",
+    "FFT Result Preview": "FFT Result Preview",
+    "Loading...": "Loading...",
+    "Processing...": "Processing...",
+    "Saving...": "Saving...",
+    "Save as": "Save as",
+    "Brush size": "Brush size",
+    Preview: "Preview",
+    Edit: "Edit",
 };
 
 export default d;

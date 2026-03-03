@@ -41,6 +41,9 @@ const d: Dictionary = {
     "Invalid tracing data file": "Nieprawidłowy plik danych rysowania",
     "Are you sure you want to load tracing data?\n\nIt will replace current drawing.":
         "Czy na pewno chcesz wczytać dane rysowania?\n\nZastąpi one obecny rysunek.",
+    "Memory error processing high-res image":
+        "Błąd pamięci podczas przetwarzania obrazu o wysokiej rozdzielczości",
+    "Save result as...": "Zapisz wynik jako...",
 };
 
 export default d;

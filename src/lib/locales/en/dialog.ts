@@ -38,6 +38,9 @@ const d: Dictionary = {
     "Invalid tracing data file": "Invalid tracing data file",
     "Are you sure you want to load tracing data?\n\nIt will replace current drawing.":
         "Are you sure you want to load tracing data?\n\nIt will replace current drawing.",
+    "Memory error processing high-res image":
+        "Memory error processing high-resolution image",
+    "Save result as...": "Save result as...",
 };
 
 export default d;

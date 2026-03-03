@@ -72,6 +72,15 @@ export type i18nKeywords = Recordify<
     | "Selected features"
     | "Cancel"
     | "Generating..."
+    | "FFT Spectrum Editor"
+    | "FFT Result Preview"
+    | "Loading..."
+    | "Processing..."
+    | "Saving..."
+    | "Save as"
+    | "Brush size"
+    | "Preview"
+    | "Edit"
 >;
 
 export type i18nDescription = Recordify<
@@ -89,7 +98,9 @@ export type i18nDescription = Recordify<
 export type i18nModes = Recordify<WORKING_MODE>;
 
 export type i18nCursor = {
-    Mode: Recordify<"Selection" | "Marking" | "Rotation" | "Measurement" | "Tracing">;
+    Mode: Recordify<
+        "Selection" | "Marking" | "Rotation" | "Measurement" | "Tracing"
+    >;
 };
 
 export type i18nObject = {
@@ -178,6 +189,9 @@ export type i18nTooltip = Recordify<
     | "Rotate right"
     | "Reset rotation"
     | "Synchronize rotation"
+    | "FFT Filter"
+    | "Paint over bright spots to filter them out"
+    | "Preview ready. Return to edit or save."
 >;
 
 export type i18nDialog = Recordify<
@@ -205,6 +219,8 @@ export type i18nDialog = Recordify<
     | "Warning"
     | "Invalid tracing data file"
     | "Are you sure you want to load tracing data?\n\nIt will replace current drawing."
+    | "Memory error processing high-res image"
+    | "Save result as..."
 >;
 
 export type i18nKeybindings = Recordify<

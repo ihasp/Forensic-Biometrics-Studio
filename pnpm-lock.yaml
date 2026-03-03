@@ -91,6 +91,9 @@ dependencies:
   clsx:
     specifier: 2.1.0
     version: 2.1.0
+  fft.js:
+    specifier: ^4.0.4
+    version: 4.0.4
   html2canvas:
     specifier: 1.4.1
     version: 1.4.1
@@ -6976,6 +6979,10 @@ packages:
     dependencies:
       picomatch: 4.0.2
     dev: true
+
+  /fft.js@4.0.4:
+    resolution: {integrity: sha512-f9c00hphOgeQTlDyavwTtu6RiK8AIFjD6+jvXkNkpeQ7rirK3uFWVpalkoS4LAwbdX7mfZ8aoBfFVQX1Re/8aw==}
+    dev: false
 
   /figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}

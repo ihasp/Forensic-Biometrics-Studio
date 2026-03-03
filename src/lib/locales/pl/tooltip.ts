@@ -53,6 +53,11 @@ const d: Dictionary = {
     "Rotate right": "Obróć w prawo (+5°)",
     "Reset rotation": "Zresetuj rotację do 0°",
     "Synchronize rotation": "Synchronizuj rotację między widokami",
+    "FFT Filter": "Otwórz edytor filtra częstotliwościowego (FFT)",
+    "Paint over bright spots to filter them out":
+        "Zamaluj jasne punkty, aby je odfiltrować",
+    "Preview ready. Return to edit or save.":
+        "Podgląd gotowy. Wróć do edycji lub zapisz.",
 };
 
 export default d;

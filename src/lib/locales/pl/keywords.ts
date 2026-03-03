@@ -63,6 +63,15 @@ const d: Dictionary = {
     "Selected features": "Cechy wybrane",
     Cancel: "Anuluj",
     "Generating...": "Generowanie...",
+    "FFT Spectrum Editor": "Edytor widma (FFT)",
+    "FFT Result Preview": "Podgląd wyniku FFT",
+    "Loading...": "Wczytywanie...",
+    "Processing...": "Przetwarzanie...",
+    "Saving...": "Zapisywanie...",
+    "Save as": "Zapisz jako",
+    "Brush size": "Wielkość pędzla",
+    Preview: "Podgląd",
+    Edit: "Edycja",
 };
 
 export default d;
