@@ -4,7 +4,7 @@ import { ExternalLink } from "lucide-react";
 export function AboutSettings() {
     const { t } = useTranslation();
 
-    const appVersion = "0.6.7";
+    const appVersion = "0.6.8";
     const appName = "Biometrics Studio";
 
     return (
