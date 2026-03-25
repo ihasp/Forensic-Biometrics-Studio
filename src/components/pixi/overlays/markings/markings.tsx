@@ -66,16 +66,15 @@ export const Markings = memo(
 
         const drawMarkings = useCallback(
             (g: PixiGraphics) => {
-                g.removeChildren();
-                g.clear();
-
-                g.children
-                    .find(x => x.name === "markingsContainer")
-                    ?.destroy({
+                const oldChildren = g.removeChildren();
+                oldChildren.forEach(child => {
+                    child.destroy({
                         children: true,
                         texture: true,
                         baseTexture: true,
                     });
+                });
+                g.clear();
 
                 const markingsContainer = new PixiGraphics();
                 markingsContainer.name = "markingsContainer";
@@ -91,7 +90,7 @@ export const Markings = memo(
                     }
                     if (!markingType) return;
                     drawMarking(
-                        g,
+                        markingsContainer,
                         selectedMarkingLabel === marking.label,
                         marking,
                         markingType,
@@ -107,7 +106,7 @@ export const Markings = memo(
 
                 // Set the alpha to provided value or based on showMarkingLabels config
                 // eslint-disable-next-line no-param-reassign
-                g.alpha = alpha ?? showMarkingLabels ? 1 : 0.5;
+                g.alpha = alpha ?? (showMarkingLabels ? 1 : 0.5);
             },
             [
                 alpha,

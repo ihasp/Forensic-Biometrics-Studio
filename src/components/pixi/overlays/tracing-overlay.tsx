@@ -17,15 +17,13 @@ const generateId = () =>
     Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
 
 const PathGraphics = memo(({ path }: { path: TracingPath }) => {
-    const alphaFilter = new PIXI.AlphaFilter(path.opacity ?? 1);
-
     const draw = useCallback(
         (g: PIXI.Graphics) => {
             g.clear();
             g.lineStyle({
                 width: path.brushSize,
                 color: Number(path.color.replace("#", "0x")),
-                alpha: 1,
+                alpha: path.opacity ?? 1,
                 join: PIXI.LINE_JOIN.ROUND,
                 cap: PIXI.LINE_CAP.ROUND,
             });
@@ -40,10 +38,10 @@ const PathGraphics = memo(({ path }: { path: TracingPath }) => {
                 if (p) g.lineTo(p.x, p.y);
             });
         },
-        [path.points, path.color, path.brushSize]
+        [path.points, path.color, path.brushSize, path.opacity]
     );
 
-    return <Graphics draw={draw} filters={[alphaFilter]} />;
+    return <Graphics draw={draw} />;
 });
 PathGraphics.displayName = "PathGraphics";
 
