@@ -35,11 +35,18 @@ type Actions = {
     loadPaths: (paths: TracingPath[]) => void;
 };
 
+const MAX_TRACING_HISTORY = 50;
+
 const clonePaths = (paths: TracingPath[]): TracingPath[] =>
     paths.map(p => ({
         ...p,
         points: p.points.map(pt => ({ ...pt })),
     }));
+
+const appendPastSnapshot = (
+    past: TracingPath[][],
+    snapshot: TracingPath[]
+): TracingPath[][] => [...past, snapshot].slice(-MAX_TRACING_HISTORY);
 
 const INITIAL_STATE: State = {
     paths: [],
@@ -69,10 +76,10 @@ const createStore = (id: CanvasMetadata["id"]) =>
                     set(state => ({
                         ...state,
                         history: {
-                            past: [
-                                ...state.history.past,
-                                clonePaths(state.paths),
-                            ],
+                            past: appendPastSnapshot(
+                                state.history.past,
+                                clonePaths(state.paths)
+                            ),
                             future: [],
                         },
                         paths: [],
@@ -82,10 +89,10 @@ const createStore = (id: CanvasMetadata["id"]) =>
                     set(state => ({
                         ...state,
                         history: {
-                            past: [
-                                ...state.history.past,
-                                clonePaths(state.paths),
-                            ],
+                            past: appendPastSnapshot(
+                                state.history.past,
+                                clonePaths(state.paths)
+                            ),
                             future: [],
                         },
                     })),
@@ -120,10 +127,10 @@ const createStore = (id: CanvasMetadata["id"]) =>
                         return {
                             ...state,
                             history: {
-                                past: [
-                                    ...state.history.past,
-                                    clonePaths(state.paths),
-                                ],
+                                past: appendPastSnapshot(
+                                    state.history.past,
+                                    clonePaths(state.paths)
+                                ),
                                 future,
                             },
                             paths: clonePaths(next),

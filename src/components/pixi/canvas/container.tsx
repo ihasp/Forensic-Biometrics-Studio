@@ -27,17 +27,36 @@ export function CanvasContainer({ ...props }: CanvasContainerProps) {
     const { id } = useCanvasContext();
     const viewport = useGlobalViewport(id, { autoUpdate: true });
     const [divSize, setDivSize] = useState({ width: 0, height: 0 });
+    const [containerNode, setContainerNode] = useState<HTMLDivElement | null>(
+        null
+    );
 
     const divRef = useCallback((node: HTMLDivElement | null) => {
-        if (!node) return;
-        const resizeObserver = new ResizeObserver(() => {
+        setContainerNode(node);
+        if (node) {
             setDivSize({
                 width: node.clientWidth,
                 height: node.clientHeight,
             });
-        });
-        resizeObserver.observe(node);
+        }
     }, []);
+
+    useEffect(() => {
+        if (!containerNode) return undefined;
+
+        const resizeObserver = new ResizeObserver(() => {
+            setDivSize({
+                width: containerNode.clientWidth,
+                height: containerNode.clientHeight,
+            });
+        });
+
+        resizeObserver.observe(containerNode);
+
+        return () => {
+            resizeObserver.disconnect();
+        };
+    }, [containerNode]);
 
     const isViewportHidden =
         viewport === null || viewport.children.length === 0;
@@ -47,6 +66,9 @@ export function CanvasContainer({ ...props }: CanvasContainerProps) {
     );
 
     useEffect(() => {
+        let cancelled = false;
+        let unlistenFn: (() => void) | null = null;
+
         const setupTauriFileDropListener = async () => {
             const unlisten = await listen(
                 "tauri://drag-drop",
@@ -76,12 +98,20 @@ export function CanvasContainer({ ...props }: CanvasContainerProps) {
                 }
             );
 
-            return () => {
+            if (cancelled) {
                 unlisten();
-            };
+                return;
+            }
+
+            unlistenFn = unlisten;
         };
 
         setupTauriFileDropListener();
+
+        return () => {
+            cancelled = true;
+            unlistenFn?.();
+        };
     }, [viewport, id]);
 
     useEffect(() => {
