@@ -12,13 +12,14 @@ import { CanvasMetadata } from "../canvas/hooks/useCanvasContext";
 import { useGlobalViewport } from "../viewport/hooks/useGlobalViewport";
 import { useGlobalApp } from "../app/hooks/useGlobalApp";
 
-const CROSSHAIR_MARKING_CLASSES = [
+const CROSSHAIR_MARKING_CLASSES: readonly MARKING_CLASS[] = [
     MARKING_CLASS.BOUNDING_BOX,
     MARKING_CLASS.POLYGON,
     MARKING_CLASS.RECTANGLE,
     MARKING_CLASS.TRIANGLE,
     MARKING_CLASS.POLYLINE,
-] as const as readonly MARKING_CLASS[];
+    MARKING_CLASS.FREEHAND,
+];
 
 export type CrosshairOverlayProps = {
     canvasMetadata: CanvasMetadata;

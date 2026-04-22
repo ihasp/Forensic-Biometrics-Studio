@@ -17,6 +17,7 @@ import {
     RectangleMarkingHandler,
     TriangleMarkingHandler,
     PolylineMarkingHandler,
+    FreehandMarkingHandler,
 } from "@/components/pixi/viewport/marking-handlers";
 import { MARKING_CLASS } from "@/lib/markings/MARKING_CLASS";
 import { isManualRotateKeyDown } from "./manualRotatePlugin";
@@ -110,11 +111,6 @@ export class MarkingModePlugin extends Plugin {
         )
             return;
 
-        document.addEventListener(
-            CUSTOM_GLOBAL_EVENTS.INTERRUPT_MARKING,
-            this.handleInterrupt
-        );
-
         const type = MarkingTypesStore.actions.selectedType.get();
         if (!type) return;
 
@@ -135,6 +131,7 @@ export class MarkingModePlugin extends Plugin {
             [MARKING_CLASS.RECTANGLE]: RectangleMarkingHandler,
             [MARKING_CLASS.TRIANGLE]: TriangleMarkingHandler,
             [MARKING_CLASS.POLYLINE]: PolylineMarkingHandler,
+            [MARKING_CLASS.FREEHAND]: FreehandMarkingHandler,
         };
 
         // eslint-disable-next-line security/detect-object-injection
@@ -143,6 +140,11 @@ export class MarkingModePlugin extends Plugin {
         if (!MarkingHandlerClass) {
             throw new Error(`Unsupported marking class: ${type.markingClass}`);
         }
+
+        document.addEventListener(
+            CUSTOM_GLOBAL_EVENTS.INTERRUPT_MARKING,
+            this.handleInterrupt
+        );
 
         this.currentHandler = new MarkingHandlerClass(this, type.id, e);
 
