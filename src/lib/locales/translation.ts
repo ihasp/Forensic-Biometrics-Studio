@@ -89,6 +89,9 @@ export type i18nKeywords = Recordify<
     | "Shape"
     | "Round"
     | "Oval"
+    | "Select a working mode to view marking types"
+    | "Select working mode"
+    | "No marking types found for the selected working mode"
 >;
 
 export type i18nDescription = Recordify<
@@ -200,6 +203,7 @@ export type i18nTooltip = Recordify<
     | "FFT Filter"
     | "Paint over bright spots to filter them out"
     | "Preview ready. Return to edit or save."
+    | "Polyline requires at least 2 segments"
 >;
 
 export type i18nDialog = Recordify<
@@ -234,10 +238,13 @@ export type i18nDialog = Recordify<
 export type i18nKeybindings = Recordify<
     | "Keybinding"
     | "None"
-    | "Press a key"
-    | "Press a numeric key (0-9)"
-    | "Press 'Del' to remove keybinding"
-    | "'{{key}}' is not a  numeric key"
+    | "Keybinding conflicts detected"
+    | "Assign keybinding"
+    | "Press a key or combination"
+    | "Waiting for input..."
+    | "This shortcut is reserved by the application"
+    | "cancel"
+    | "remove"
 >;
 
 export type i18nReport = Recordify<
