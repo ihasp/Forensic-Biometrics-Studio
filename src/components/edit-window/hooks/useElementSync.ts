@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { DependencyList, useCallback, useEffect } from "react";
 
 export function useElementSync() {
     const syncContainedElement = useCallback(
@@ -42,8 +42,7 @@ export function useSyncedElement(
     sourceRef: React.RefObject<HTMLImageElement | null>,
     targetRef: React.RefObject<HTMLElement | null>,
     containerRef: React.RefObject<HTMLElement | null>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dependencies: any[] = [],
+    dependencies: DependencyList = [],
     extraStyles: Partial<CSSStyleDeclaration> = {}
 ) {
     const { syncContainedElement } = useElementSync();
