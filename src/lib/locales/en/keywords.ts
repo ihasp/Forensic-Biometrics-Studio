@@ -74,20 +74,17 @@ const d: Dictionary = {
     Edit: "Edit",
     Apply: "Apply",
     Clear: "Clear",
-<<<<<<< master
     Draw: "Draw",
     Pan: "Pan",
     Eraser: "Eraser",
     Shape: "Shape",
     Round: "Round",
     Oval: "Oval",
-=======
     "Select working mode": "Select working mode",
     "No marking types found for the selected working mode":
         "No marking types found for the selected working mode",
     "Select a working mode to view marking types":
         "Select a working mode to view marking types",
->>>>>>> master
 };
 
 export default d;
