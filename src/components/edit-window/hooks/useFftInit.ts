@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
-import React, { RefObject, useEffect } from "react";
 import { ImageFFT, type FFTResult } from "@/lib/fftProcessor";
+import React, { RefObject, useEffect } from "react";
 import { FftStatus } from "../fft/fftTypes";
 
 // this file contains fft lifecycle

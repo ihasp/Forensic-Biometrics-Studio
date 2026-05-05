@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useTranslation } from "react-i18next";
 import { WindowControls } from "@/components/menu/window-controls";
 import { Menubar } from "@/components/ui/menubar";
-import { cn } from "@/lib/utils/shadcn";
-import { ICON } from "@/lib/utils/const";
-import { Edit } from "lucide-react";
 import { useSettingsSync } from "@/lib/hooks/useSettingsSync";
+import { ICON } from "@/lib/utils/const";
+import { cn } from "@/lib/utils/shadcn";
+import { Edit } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import ImageDpiControls from "./dpi/image-dpi-controls";
 import ImagePanes from "./fft/ImagePanes";
 import { useFftWorkspace } from "./hooks/useFftWorkspace";
 
-import { useImagePanZoom } from "./hooks/useImagePanZoom";
-import { useImageIO } from "./hooks/useImageIO";
 import { useSyncedElement } from "./hooks/useElementSync";
+import { useImageIO } from "./hooks/useImageIO";
+import { useImagePanZoom } from "./hooks/useImagePanZoom";
 
 import { SidebarAdjustments } from "./components/SidebarAdjustments";
-import { SidebarTools } from "./components/SidebarTools";
 import { SidebarFFT } from "./components/SidebarFFT";
+import { SidebarTools } from "./components/SidebarTools";
 
 interface EditWindowContentProps {
     imageRef?: React.RefObject<HTMLImageElement>;

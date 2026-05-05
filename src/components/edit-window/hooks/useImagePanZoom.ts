@@ -1,4 +1,4 @@
-import React, { useState, useCallback, RefObject } from "react";
+import React, { RefObject, useCallback, useState } from "react";
 
 export function useImagePanZoom(
     containerRef: RefObject<HTMLElement | null>,

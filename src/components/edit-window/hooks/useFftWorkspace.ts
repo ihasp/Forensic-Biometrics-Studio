@@ -1,9 +1,9 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { ImageFFT, type FFTResult } from "@/lib/fftProcessor";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { redrawFftOverlay } from "../fft/fftCanvasUtils";
+import { BrushShape, FftStatus, InteractionMode } from "../fft/fftTypes";
 import { useFftInit, type FftRefs } from "./useFftInit";
 import { useFftPainter } from "./useFftPainter";
-import { redrawFftOverlay } from "../fft/fftCanvasUtils";
-import { FftStatus, InteractionMode, BrushShape } from "../fft/fftTypes";
 
 export interface UseFftWorkspaceProps {
     imageRef: RefObject<HTMLImageElement | null>;
