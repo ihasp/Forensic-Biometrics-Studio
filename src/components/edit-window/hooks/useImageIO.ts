@@ -3,11 +3,11 @@ import { listen, emit } from "@tauri-apps/api/event";
 import { readFile, writeFile, exists } from "@tauri-apps/plugin-fs";
 import { basename, extname, join, dirname } from "@tauri-apps/api/path";
 import { toast } from "sonner";
+import type { TFunction } from "i18next";
 
 export function useImageIO(
     imageRef: RefObject<HTMLImageElement | null>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    t: any,
+    t: TFunction<"tooltip">,
     onImageLoad?: () => void
 ) {
     const [imagePath, setImagePath] = useState<string | null>(null);
