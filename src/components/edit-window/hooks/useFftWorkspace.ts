@@ -50,6 +50,7 @@ export function useFftWorkspace({
     const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const specCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const originalDimsRef = useRef({ w: 0, h: 0 });
+    const readyRedrawFrameRef = useRef<number | null>(null);
 
     const brushSizeRef = useRef(brushSize);
     const brushShapeRef = useRef(brushShape);
@@ -100,6 +101,29 @@ export function useFftWorkspace({
         if (ctx) ctx.putImageData(resultImage, 0, 0);
     }, [previewCanvasRef]);
 
+    const redrawAfterInit = useCallback(() => {
+        doRedrawOverlay();
+        updateLivePreview();
+
+        if (readyRedrawFrameRef.current !== null) {
+            cancelAnimationFrame(readyRedrawFrameRef.current);
+        }
+
+        readyRedrawFrameRef.current = requestAnimationFrame(() => {
+            readyRedrawFrameRef.current = null;
+            doRedrawOverlay();
+            updateLivePreview();
+        });
+    }, [doRedrawOverlay, updateLivePreview]);
+
+    useEffect(() => {
+        return () => {
+            if (readyRedrawFrameRef.current !== null) {
+                cancelAnimationFrame(readyRedrawFrameRef.current);
+            }
+        };
+    }, []);
+
     useFftInit({
         isActive,
         imageRef,
@@ -108,10 +132,7 @@ export function useFftWorkspace({
         refs,
         onToggleActive,
         onStatusChange: setStatus,
-        onReady: () => {
-            doRedrawOverlay();
-            updateLivePreview();
-        },
+        onReady: redrawAfterInit,
     });
 
     useFftPainter({
@@ -128,27 +149,6 @@ export function useFftWorkspace({
         onWheel,
         onMiddleDrag,
     });
-
-    useEffect(() => {
-        if (!isActive || status !== "ready") return undefined;
-        let rafId = 0;
-        let nestedRafId = 0;
-
-        rafId = requestAnimationFrame(() => {
-            doRedrawOverlay();
-            updateLivePreview();
-
-            nestedRafId = requestAnimationFrame(() => {
-                doRedrawOverlay();
-                updateLivePreview();
-            });
-        });
-
-        return () => {
-            cancelAnimationFrame(rafId);
-            cancelAnimationFrame(nestedRafId);
-        };
-    }, [isActive, status, doRedrawOverlay, updateLivePreview]);
 
     const applyFilter = useCallback(() => {
         const outCvs = previewCanvasRef.current;

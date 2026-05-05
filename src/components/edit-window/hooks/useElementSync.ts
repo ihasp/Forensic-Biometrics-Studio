@@ -88,6 +88,5 @@ export function useSyncedElement(
             resizeObserver.disconnect();
             source.removeEventListener("load", sync);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [syncContainedElement, ...dependencies]);
 }
