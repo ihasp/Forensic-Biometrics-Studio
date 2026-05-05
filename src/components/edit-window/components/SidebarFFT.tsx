@@ -59,7 +59,7 @@ export function SidebarFFT({
                                         }
                                         className={cn(
                                             "flex-1 flex items-center justify-center gap-2 py-1.5 px-2 rounded-md transition-all text-xs font-medium",
-                                            fft.interactionMode !== "pan"
+                                            fft.interactionMode === "draw"
                                                 ? "bg-background shadow-sm text-foreground"
                                                 : "text-muted-foreground hover:bg-secondary/80 hover:text-secondary-foreground"
                                         )}
