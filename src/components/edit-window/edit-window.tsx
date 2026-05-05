@@ -48,12 +48,13 @@ function EditWindowContent({
     const fftCanvasRef = providedPreviewCanvasRef ?? internalPreviewCanvasRef;
     const left = useImagePanZoom(containerRef, imageRef, true);
     const right = useImagePanZoom(fftContainerRef, fftCanvasRef, isFftActive);
+    const resetLeft = left.reset;
+    const resetRight = right.reset;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        left.reset();
-        right.reset();
-    }, [isFftActive]);
+        resetLeft();
+        resetRight();
+    }, [isFftActive, resetLeft, resetRight]);
 
     const {
         imagePath,
@@ -64,18 +65,18 @@ function EditWindowContent({
         error,
         saveEditedImage,
     } = useImageIO(imageRef, t, () => {
-        left.reset();
-        right.reset();
+        resetLeft();
+        resetRight();
     });
 
     const handleFftApply = useCallback(
         (dataUrl: string) => {
             setImageUrl(dataUrl);
             onFftApply?.(dataUrl);
-            left.reset();
-            right.reset();
+            resetLeft();
+            resetRight();
         },
-        [onFftApply, setImageUrl, left, right]
+        [onFftApply, setImageUrl, resetLeft, resetRight]
     );
 
     const fft = useFftWorkspace({
