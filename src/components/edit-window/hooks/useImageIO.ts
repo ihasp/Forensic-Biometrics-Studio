@@ -148,14 +148,10 @@ export function useImageIO(
             });
         };
 
-        let unlistenPromise: Promise<() => void> | null = null;
-        setupListener().then(unlisten => {
-            unlistenPromise = Promise.resolve(unlisten);
-        });
+        const unlistenPromise = setupListener();
         return () => {
-            unlistenPromise?.then(fn => fn());
+            unlistenPromise.then(unlisten => unlisten());
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
