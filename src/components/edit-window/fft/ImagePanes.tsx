@@ -16,6 +16,7 @@ interface ImagePanesProps {
     containerRef: RefObject<HTMLDivElement>;
     imageRef: RefObject<HTMLImageElement>;
     spectrumCanvasRef: RefObject<HTMLCanvasElement>;
+    dpiCanvasRef: RefObject<HTMLCanvasElement>;
     brightness: number;
     contrast: number;
     zoom: number;
@@ -52,6 +53,7 @@ function ImagePanes({
     containerRef,
     imageRef,
     spectrumCanvasRef,
+    dpiCanvasRef,
     brightness,
     contrast,
     zoom,
@@ -146,6 +148,18 @@ function ImagePanes({
                         transition: isDragging
                             ? "none"
                             : "transform 0.1s ease-out, opacity 0.35s ease-out",
+                    }}
+                />
+                {/* 'dpi canvas' */}
+                <canvas
+                    ref={dpiCanvasRef}
+                    className="absolute pointer-events-none z-40"
+                    style={{
+                        transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                        transformOrigin: TRANSFORM_ORIGIN,
+                        transition: isDragging
+                            ? "none"
+                            : "transform 0.1s ease-out",
                     }}
                 />
                 <div

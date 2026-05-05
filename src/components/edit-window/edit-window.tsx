@@ -43,6 +43,7 @@ export function EditWindow({
     const internalSpectrumCanvasRef = useRef<HTMLCanvasElement>(null);
     const internalPreviewCanvasRef = useRef<HTMLCanvasElement>(null);
     const fftContainerRef = useRef<HTMLDivElement>(null);
+    const dpiCanvasRef = useRef<HTMLCanvasElement>(null);
     const imageRef = providedImageRef ?? internalImageRef;
     const canvasRef = providedSpectrumCanvasRef ?? internalSpectrumCanvasRef;
     const fftCanvasRef = providedPreviewCanvasRef ?? internalPreviewCanvasRef;
@@ -92,6 +93,7 @@ export function EditWindow({
 
     useSyncedElement(imageRef, imageRef, containerRef, [imageUrl]);
     useSyncedElement(imageRef, canvasRef, containerRef, [imageUrl]);
+    useSyncedElement(imageRef, dpiCanvasRef, containerRef, [imageUrl]);
     useSyncedElement(
         imageRef,
         fftCanvasRef,
@@ -152,6 +154,7 @@ export function EditWindow({
                             containerRef={containerRef}
                             imageRef={imageRef}
                             spectrumCanvasRef={canvasRef}
+                            dpiCanvasRef={dpiCanvasRef}
                             brightness={brightness}
                             contrast={contrast}
                             zoom={left.zoom}
@@ -206,7 +209,8 @@ export function EditWindow({
                         setBrightness={setBrightness}
                         contrast={contrast}
                         setContrast={setContrast}
-                        disabled={!imageUrl}
+                        // Disable when fft editor is active
+                        disabled={!imageUrl || isFftActive}
                     />
 
                     <div className="border-t border-border/30" />
@@ -217,7 +221,8 @@ export function EditWindow({
                         </h3>
                         <ImageDpiControls
                             imageRef={imageRef}
-                            canvasRef={canvasRef}
+                            canvasRef={dpiCanvasRef}
+                            disabled={isFftActive}
                         />
                     </div>
 
