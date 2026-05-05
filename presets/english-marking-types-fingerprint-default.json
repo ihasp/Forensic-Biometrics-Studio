@@ -2,7 +2,7 @@
     "metadata": {
         "software": {
             "name": "biometrics-studio",
-            "version": "0.6.9"
+            "version": "0.6.10"
         }
     },
     "data": {
@@ -30,7 +30,7 @@
             {
                 "id": "49173ccd-98a8-4aa9-9eae-f4df32dbf583",
                 "name": "RidgeBeginning",
-                "displayName": "Początek linii",
+                "displayName": "Ridge beginning",
                 "markingClass": "ray",
                 "backgroundColor": "#2871e6",
                 "textColor": "#0a130a",
@@ -40,7 +40,7 @@
             {
                 "id": "e6cbde52-5a18-4236-8287-7a1daf941ba9",
                 "name": "RidgeEnding",
-                "displayName": "Zakończenie linii",
+                "displayName": "Ridge ending",
                 "markingClass": "ray",
                 "backgroundColor": "#d1db3d",
                 "textColor": "#0a130a",
@@ -50,7 +50,7 @@
             {
                 "id": "f47c4b97-2d62-4959-aa21-edebfa7a756a",
                 "name": "Bifurcation",
-                "displayName": "Rozwidlenie",
+                "displayName": "Bifurcation",
                 "markingClass": "ray",
                 "backgroundColor": "#36d938",
                 "textColor": "#0a130a",
@@ -60,7 +60,7 @@
             {
                 "id": "4953e6e4-356a-48c2-bdae-eaeaa5ebff68",
                 "name": "RidgeMerge",
-                "displayName": "Złączenie linii",
+                "displayName": "Ridge joining",
                 "markingClass": "ray",
                 "backgroundColor": "#f93e98",
                 "textColor": "#0a130a",
@@ -70,7 +70,7 @@
             {
                 "id": "8ad7471b-d25b-4c49-92a7-08b27ac79aab",
                 "name": "Hook",
-                "displayName": "Haczyk",
+                "displayName": "Hook",
                 "markingClass": "line_segment",
                 "backgroundColor": "#9d4edd",
                 "textColor": "#0a130a",
@@ -80,7 +80,7 @@
             {
                 "id": "7c12e813-15c5-4087-8428-3723ad3e4956",
                 "name": "Section",
-                "displayName": "Odcinek",
+                "displayName": "Island",
                 "markingClass": "line_segment",
                 "backgroundColor": "#fff6bd",
                 "textColor": "#0a130a",
@@ -90,7 +90,7 @@
             {
                 "id": "58b97c5b-713a-4452-ba4a-83c5ce639bcf",
                 "name": "Bridge",
-                "displayName": "Mostek",
+                "displayName": "Bridge",
                 "markingClass": "line_segment",
                 "backgroundColor": "#d25171",
                 "textColor": "#0a130a",
@@ -100,7 +100,7 @@
             {
                 "id": "3bc11b0e-0744-4eb8-9ecc-5f22213633f1",
                 "name": "Point",
-                "displayName": "Punkt",
+                "displayName": "Point",
                 "markingClass": "point",
                 "backgroundColor": "#f448cf",
                 "textColor": "#0a130a",
@@ -110,7 +110,7 @@
             {
                 "id": "b59bf4ab-3737-4822-b333-beaf95612f04",
                 "name": "Pore",
-                "displayName": "Por",
+                "displayName": "Pore",
                 "markingClass": "point",
                 "backgroundColor": "#ff5733",
                 "textColor": "#0a130a",
@@ -120,7 +120,7 @@
             {
                 "id": "26595e0c-208b-48b3-b65c-63ac0e5f3d15",
                 "name": "Lake",
-                "displayName": "Oczko",
+                "displayName": "Lake",
                 "markingClass": "line_segment",
                 "backgroundColor": "#d279cf",
                 "textColor": "#0a130a",
@@ -130,7 +130,7 @@
             {
                 "id": "07317d85-93a3-48a4-b96e-3ee5a2708ac0",
                 "name": "Ridge protrusion",
-                "displayName": "Wypust krawędzi",
+                "displayName": "Ridge protrusion",
                 "markingClass": "point",
                 "backgroundColor": "#68d651",
                 "textColor": "#0a130a",
@@ -140,7 +140,7 @@
             {
                 "id": "a71d05c4-a735-4191-88bb-9b6ddb5073d7",
                 "name": "Ridge indentation",
-                "displayName": "Wgłębienie krawędzi",
+                "displayName": "Ridge indentation",
                 "markingClass": "point",
                 "backgroundColor": "#ff914d",
                 "textColor": "#0a130a",
@@ -150,7 +150,7 @@
             {
                 "id": "a9b5408a-97a4-45f1-85db-be33053a371c",
                 "name": "Dot",
-                "displayName": "Plamka",
+                "displayName": "Dot",
                 "markingClass": "point",
                 "backgroundColor": "#f78fb3",
                 "textColor": "#0a130a",
@@ -160,7 +160,7 @@
             {
                 "id": "35b5d779-f12b-469f-95de-7bfc678ad0c8",
                 "name": "Incipient ridge",
-                "displayName": "Linia szczątkowa",
+                "displayName": "Incipient ridge",
                 "markingClass": "line_segment",
                 "backgroundColor": "#1f7a8c",
                 "textColor": "#0a130a",
@@ -170,7 +170,7 @@
             {
                 "id": "23af05e0-2aaf-46fd-9f0f-16b075a1cfdb",
                 "name": "Scar",
-                "displayName": "Blizna",
+                "displayName": "Scar",
                 "markingClass": "line_segment",
                 "backgroundColor": "#ffc300",
                 "textColor": "#0a130a",
@@ -180,7 +180,7 @@
             {
                 "id": "dcbe2774-07df-45c2-8318-a0d3b40dcc96",
                 "name": "Crease",
-                "displayName": "Pęknięcie",
+                "displayName": "Crease",
                 "markingClass": "line_segment",
                 "backgroundColor": "#2d6a4f",
                 "textColor": "#0a130a",

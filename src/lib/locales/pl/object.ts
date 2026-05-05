@@ -18,6 +18,9 @@ const d: Dictionary = {
                     bounding_box: "Prostokąt (legacy)",
                     rectangle: "Prostokąt",
                     polygon: "Wielokąt",
+                    triangle: "Trójkąt",
+                    polyline: "Linia łamana",
+                    freehand: "Linia odręczna",
                     measurement: "Miarka",
                 },
             },
@@ -26,7 +29,8 @@ const d: Dictionary = {
         Actions: {
             merge: {
                 enabled: "Po\u0142\u0105cz adnotacje",
-                disabled: "Nie mo\u017cna po\u0142\u0105czy\u0107 - znaleziono pasuj\u0105ce ID",
+                disabled:
+                    "Nie mo\u017cna po\u0142\u0105czy\u0107 - znaleziono pasuj\u0105ce ID",
             },
         },
     },

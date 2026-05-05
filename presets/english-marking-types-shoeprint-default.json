@@ -2,7 +2,7 @@
     "metadata": {
         "software": {
             "name": "biometrics-studio",
-            "version": "0.6.9"
+            "version": "0.6.10"
         }
     },
     "data": {
@@ -10,7 +10,7 @@
             {
                 "id": "85696031-2a8a-4656-94e4-b1681f30f69b",
                 "name": "Prostokąt",
-                "displayName": "U: Przetarcie",
+                "displayName": "U: Abrasion",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#57e561",
                 "textColor": "#0a130a",
@@ -20,7 +20,7 @@
             {
                 "id": "872dac97-7a29-4051-8c3a-80e6f9c4b589",
                 "name": "Odcinek",
-                "displayName": "U: Przecięcie",
+                "displayName": "U: Cut",
                 "markingClass": "line_segment",
                 "backgroundColor": "#ea5757",
                 "textColor": "#0a130a",
@@ -30,7 +30,7 @@
             {
                 "id": "1c4290a4-8b6c-47f1-9f2a-ee79743280ff",
                 "name": "Prostokąt",
-                "displayName": "U: Ubytek unikalny",
+                "displayName": "U: Material loss",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#4696ec",
                 "textColor": "#0a130a",
@@ -40,7 +40,7 @@
             {
                 "id": "aae66e2a-6418-4467-a5e9-212bf62298b1",
                 "name": "Prostokąt",
-                "displayName": "U: Inna unikalna cecha",
+                "displayName": "U: Other individual mark",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#e5d62e",
                 "textColor": "#0a130a",
@@ -50,7 +50,7 @@
             {
                 "id": "6f378c67-4289-40c0-9c4b-78fbb8ecae94",
                 "name": "Odcinek",
-                "displayName": "G: Linia prosta",
+                "displayName": "G: Straight line",
                 "markingClass": "line_segment",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -60,7 +60,7 @@
             {
                 "id": "28aec52d-50cb-49f1-bc05-fc3f0cc6df1d",
                 "name": "Prostokąt",
-                "displayName": "G: Łuk",
+                "displayName": "G: Arc",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -70,7 +70,7 @@
             {
                 "id": "855f8672-4595-410b-8186-8399cc834f91",
                 "name": "Prostokąt",
-                "displayName": "G: Okrąg / Kółko",
+                "displayName": "G: Circle",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -80,7 +80,7 @@
             {
                 "id": "307d2f75-e3cd-48ed-b0b9-59d59d377de4",
                 "name": "Prostokąt",
-                "displayName": "G: Elipsa",
+                "displayName": "G: Ellipse",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -90,7 +90,7 @@
             {
                 "id": "5e26648d-1208-4b1f-8d39-850003031980",
                 "name": "Prostokąt",
-                "displayName": "G: Trójkąt",
+                "displayName": "G: Triangle",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -100,7 +100,7 @@
             {
                 "id": "26430b77-1d50-459d-a5a7-dcd5445d8a04",
                 "name": "Prostokąt",
-                "displayName": "G: Czworokąt",
+                "displayName": "G: Quadrilateral",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -110,7 +110,7 @@
             {
                 "id": "955db2de-bf8a-4abc-9665-e656c952706e",
                 "name": "Prostokąt",
-                "displayName": "G: Pięciokąt",
+                "displayName": "G: Pentagon",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -120,7 +120,7 @@
             {
                 "id": "e1a976af-d411-49fb-affa-ead9024be8d4",
                 "name": "Prostokąt",
-                "displayName": "G: Sześciokąt",
+                "displayName": "G: Hexagon",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -130,7 +130,7 @@
             {
                 "id": "46fb8644-b469-4f13-9762-740194263a22",
                 "name": "Prostokąt",
-                "displayName": "G: Wielokąt",
+                "displayName": "G: Polygon",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -140,7 +140,7 @@
             {
                 "id": "9fb491b4-85ed-4541-853d-39b7a3f66193",
                 "name": "Prostokąt",
-                "displayName": "G: Gwiazda",
+                "displayName": "G: Star",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -150,7 +150,7 @@
             {
                 "id": "5e7131e0-23aa-4a20-9f2b-6ec58186e1c4",
                 "name": "Prostokąt",
-                "displayName": "G: Krzyż / Plus",
+                "displayName": "G: Cross / Plus",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -160,7 +160,7 @@
             {
                 "id": "decd68e4-369a-4860-9c8b-96f178a34dbe",
                 "name": "Prostokąt",
-                "displayName": "G: Strzałka",
+                "displayName": "G: Arrow",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -170,7 +170,7 @@
             {
                 "id": "2eda7127-f778-48a7-8b06-d0b9ba750dca",
                 "name": "Prostokąt",
-                "displayName": "G: Serce",
+                "displayName": "G: Heart",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -180,7 +180,7 @@
             {
                 "id": "98b3cc04-f093-4578-91aa-211cb7d95836",
                 "name": "Prostokąt",
-                "displayName": "G: Cel",
+                "displayName": "G: Target",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -190,7 +190,7 @@
             {
                 "id": "3e3c5cdd-7b11-424c-b17b-db10754708cf",
                 "name": "Prostokąt",
-                "displayName": "Motylek",
+                "displayName": "G: Butterfly",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -200,7 +200,7 @@
             {
                 "id": "7828e58f-b299-444b-9fda-5520e6032aa1",
                 "name": "Prostokąt",
-                "displayName": "Kapelusz",
+                "displayName": "G: Hat",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -210,7 +210,7 @@
             {
                 "id": "4d178a8b-aed4-4883-a10b-10d483496bb2",
                 "name": "Prostokąt",
-                "displayName": "G: Tekst",
+                "displayName": "G: Text / Lettering",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -220,7 +220,7 @@
             {
                 "id": "ae69c663-a7c3-4329-94cd-b8d7eea0f4f4",
                 "name": "Prostokąt",
-                "displayName": "G: Logo",
+                "displayName": "G: Logo / Brand",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -230,7 +230,7 @@
             {
                 "id": "012df295-1e56-4ded-8137-13696bfefb3e",
                 "name": "Prostokąt",
-                "displayName": "G: Inny powtarzający się kształt",
+                "displayName": "G: Other repeating shape",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aac8aa",
                 "textColor": "#0a130a",
@@ -240,7 +240,7 @@
             {
                 "id": "7216087c-1efd-458a-a7e7-d2d34aec659f",
                 "name": "Prostokąt",
-                "displayName": "P: Linie proste",
+                "displayName": "P: Linear",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -250,7 +250,7 @@
             {
                 "id": "00b77913-cf70-45ec-a8e7-e65e10f9ac55",
                 "name": "Prostokąt",
-                "displayName": "P: Fale",
+                "displayName": "P: Wavy",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -260,7 +260,7 @@
             {
                 "id": "e6d459da-d5da-4324-8028-5f80662c9380",
                 "name": "Prostokąt",
-                "displayName": "P: Zygzaki",
+                "displayName": "P: Zigzag",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -270,7 +270,7 @@
             {
                 "id": "148c9d98-9b3f-44ac-af65-b587039ece8c",
                 "name": "Prostokąt",
-                "displayName": "P: Łuki",
+                "displayName": "P: Arched",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -280,7 +280,7 @@
             {
                 "id": "a5af4777-00c3-4991-a867-07dd46f6d010",
                 "name": "Prostokąt",
-                "displayName": "P: Kratka",
+                "displayName": "P: Grid",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -290,7 +290,7 @@
             {
                 "id": "289360b9-fc64-424e-90fb-5bb35b9d55e7",
                 "name": "Prostokąt",
-                "displayName": "P: Cegiełka",
+                "displayName": "P: Brick",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -300,7 +300,7 @@
             {
                 "id": "a027b9b0-ca42-4466-a336-420df5982b28",
                 "name": "Prostokąt",
-                "displayName": "P: Splot",
+                "displayName": "P: Woven",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -310,7 +310,7 @@
             {
                 "id": "37f501e1-9d1a-4006-8cc8-795dade938d2",
                 "name": "Prostokąt",
-                "displayName": "P: Plaster miodu",
+                "displayName": "P: Honeycomb",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -320,7 +320,7 @@
             {
                 "id": "d462d1d4-ccf9-467b-8ae0-7805bf8ff925",
                 "name": "Prostokąt",
-                "displayName": "P: Textura",
+                "displayName": "P: Texture",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -330,7 +330,7 @@
             {
                 "id": "21bbc40f-b522-494a-b493-c2d7f3b94c99",
                 "name": "Prostokąt",
-                "displayName": "P: Inne wzory liniowe",
+                "displayName": "P: Other linear pattern",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -340,7 +340,7 @@
             {
                 "id": "cf30c8b1-8567-408b-9201-4ce24c877743",
                 "name": "Prostokąt",
-                "displayName": "P: Gładka powierzchnia",
+                "displayName": "P: Smooth surface",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#aa82c8",
                 "textColor": "#0a130a",
@@ -350,7 +350,7 @@
             {
                 "id": "8c99a981-3e03-4846-ada3-1293bb383251",
                 "name": "Prostokąt",
-                "displayName": "S: Odcisk buta",
+                "displayName": "S: Shoeprint area",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#ededed",
                 "textColor": "#0a130a",
@@ -360,7 +360,7 @@
             {
                 "id": "01f6acd5-67a5-4922-b784-1ae110167fe7",
                 "name": "Prostokąt",
-                "displayName": "S: Pięta",
+                "displayName": "S: Heel area",
                 "markingClass": "bounding_box",
                 "backgroundColor": "#f4e7a9",
                 "textColor": "#0a130a",
@@ -370,7 +370,7 @@
             {
                 "id": "5e5ea9ea-7302-480d-a5fe-c3284e48b51d",
                 "name": "Odcinek",
-                "displayName": "S: Oś podłużna",
+                "displayName": "S: Longitudinal axis",
                 "markingClass": "line_segment",
                 "backgroundColor": "#0028c7",
                 "textColor": "#ffffff",

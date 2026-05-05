@@ -15,6 +15,9 @@ import {
     BoundingBoxMarkingHandler,
     PolygonMarkingHandler,
     RectangleMarkingHandler,
+    TriangleMarkingHandler,
+    PolylineMarkingHandler,
+    FreehandMarkingHandler,
 } from "@/components/pixi/viewport/marking-handlers";
 import { MARKING_CLASS } from "@/lib/markings/MARKING_CLASS";
 import { isManualRotateKeyDown } from "./manualRotatePlugin";
@@ -31,6 +34,10 @@ export class MarkingModePlugin extends Plugin {
 
     private currentHandler: MarkingHandler | null = null;
 
+    private pendingMouseEvent: FederatedPointerEvent | null = null;
+
+    private rafId: number | null = null;
+
     constructor(viewport: Viewport, handlerParams: ViewportHandlerParams) {
         super(viewport);
         this.dragPlugin = new Drag(viewport, { wheel: true });
@@ -44,6 +51,7 @@ export class MarkingModePlugin extends Plugin {
 
     public override destroy(): void {
         super.destroy();
+        this.cancelPendingMouseMove();
         this.removeEventListeners();
         window.removeEventListener("keydown", this.handleKeyDown);
         window.removeEventListener("keyup", this.handleKeyUp);
@@ -53,8 +61,17 @@ export class MarkingModePlugin extends Plugin {
         document.dispatchEvent(
             new Event(CUSTOM_GLOBAL_EVENTS.INTERRUPT_MARKING)
         );
+        this.cancelPendingMouseMove();
         this.removeEventListeners();
         this.currentHandler = null;
+    }
+
+    private cancelPendingMouseMove() {
+        if (this.rafId !== null) {
+            cancelAnimationFrame(this.rafId);
+            this.rafId = null;
+        }
+        this.pendingMouseEvent = null;
     }
 
     private isMarkingModeActive(): boolean {
@@ -94,11 +111,6 @@ export class MarkingModePlugin extends Plugin {
         )
             return;
 
-        document.addEventListener(
-            CUSTOM_GLOBAL_EVENTS.INTERRUPT_MARKING,
-            this.handleInterrupt
-        );
-
         const type = MarkingTypesStore.actions.selectedType.get();
         if (!type) return;
 
@@ -117,6 +129,9 @@ export class MarkingModePlugin extends Plugin {
             [MARKING_CLASS.BOUNDING_BOX]: BoundingBoxMarkingHandler,
             [MARKING_CLASS.POLYGON]: PolygonMarkingHandler,
             [MARKING_CLASS.RECTANGLE]: RectangleMarkingHandler,
+            [MARKING_CLASS.TRIANGLE]: TriangleMarkingHandler,
+            [MARKING_CLASS.POLYLINE]: PolylineMarkingHandler,
+            [MARKING_CLASS.FREEHAND]: FreehandMarkingHandler,
         };
 
         // eslint-disable-next-line security/detect-object-injection
@@ -125,6 +140,11 @@ export class MarkingModePlugin extends Plugin {
         if (!MarkingHandlerClass) {
             throw new Error(`Unsupported marking class: ${type.markingClass}`);
         }
+
+        document.addEventListener(
+            CUSTOM_GLOBAL_EVENTS.INTERRUPT_MARKING,
+            this.handleInterrupt
+        );
 
         this.currentHandler = new MarkingHandlerClass(this, type.id, e);
 
@@ -142,22 +162,39 @@ export class MarkingModePlugin extends Plugin {
         this.viewport.on("mousemove", this.handleMouseMove);
         this.viewport.on("mouseup", this.handleLMBUp);
         this.viewport.on("mousedown", this.handleLMBDown);
+        this.viewport.on("rightup", this.handleRMBUp);
+        this.viewport.on("rightdown", this.handleRMBDown);
     }
 
     private removeEventListeners(): void {
         this.viewport.off("mousemove", this.handleMouseMove);
         this.viewport.off("mouseup", this.handleLMBUp);
         this.viewport.off("mousedown", this.handleLMBDown);
+        this.viewport.off("rightup", this.handleRMBUp);
+        this.viewport.off("rightdown", this.handleRMBDown);
+
         document.removeEventListener(
             CUSTOM_GLOBAL_EVENTS.INTERRUPT_MARKING,
             this.handleInterrupt
         );
+
         this.currentHandler = null;
     }
 
     private handleMouseMove = (e: FederatedPointerEvent): void => {
         if (!this.isMarkingModeActive() || !this.currentHandler) return;
-        this.currentHandler.handleMouseMove(e);
+        this.pendingMouseEvent = e;
+        if (this.rafId === null) {
+            this.rafId = requestAnimationFrame(this.flushMouseMove);
+        }
+    };
+
+    private flushMouseMove = () => {
+        this.rafId = null;
+        if (this.pendingMouseEvent && this.currentHandler) {
+            this.currentHandler.handleMouseMove(this.pendingMouseEvent);
+            this.pendingMouseEvent = null;
+        }
     };
 
     private handleLMBUp = (e: FederatedPointerEvent): void => {
@@ -170,6 +207,20 @@ export class MarkingModePlugin extends Plugin {
             return;
 
         if (e.button === 0) this.currentHandler.handleLMBDown(e);
+    };
+
+    private handleRMBUp = (e: FederatedPointerEvent): void => {
+        if (!this.shouldHandleMarking() || !this.currentHandler?.handleRMBUp)
+            return;
+
+        this.currentHandler.handleRMBUp(e);
+    };
+
+    private handleRMBDown = (e: FederatedPointerEvent): void => {
+        if (!this.shouldHandleMarking() || !this.currentHandler?.handleRMBDown)
+            return;
+
+        this.currentHandler.handleRMBDown(e);
     };
 
     public override down(event: FederatedPointerEvent): boolean {
