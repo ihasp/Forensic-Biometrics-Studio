@@ -233,24 +233,3 @@ export function EditWindow({
         </main>
     );
 }
-
-export function EditWindowWithProps({
-    imageRef,
-    spectrumCanvasRef,
-    previewCanvasRef,
-    onApply,
-}: {
-    imageRef: React.RefObject<HTMLImageElement>;
-    spectrumCanvasRef: React.RefObject<HTMLCanvasElement>;
-    previewCanvasRef: React.RefObject<HTMLCanvasElement>;
-    onApply: (dataUrl: string) => void;
-}) {
-    return (
-        <EditWindow
-            imageRef={imageRef}
-            spectrumCanvasRef={spectrumCanvasRef}
-            previewCanvasRef={previewCanvasRef}
-            onFftApply={onApply}
-        />
-    );
-}
