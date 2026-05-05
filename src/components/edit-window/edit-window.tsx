@@ -25,7 +25,7 @@ interface EditWindowContentProps {
     onFftApply?: (dataUrl: string) => void;
 }
 
-function EditWindowContent({
+export function EditWindow({
     imageRef: providedImageRef,
     spectrumCanvasRef: providedSpectrumCanvasRef,
     previewCanvasRef: providedPreviewCanvasRef,
@@ -234,10 +234,6 @@ function EditWindowContent({
     );
 }
 
-export function EditWindow() {
-    return <EditWindowContent />;
-}
-
 export function EditWindowWithProps({
     imageRef,
     spectrumCanvasRef,
@@ -250,7 +246,7 @@ export function EditWindowWithProps({
     onApply: (dataUrl: string) => void;
 }) {
     return (
-        <EditWindowContent
+        <EditWindow
             imageRef={imageRef}
             spectrumCanvasRef={spectrumCanvasRef}
             previewCanvasRef={previewCanvasRef}
