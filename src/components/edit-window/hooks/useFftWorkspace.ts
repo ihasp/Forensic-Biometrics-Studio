@@ -74,54 +74,7 @@ export function useFftWorkspace({
         fftDimsRef,
     };
 
-    // Initialize Web Worker when workspace is active, terminate when deactivated
-    useEffect(() => {
-        if (isActive && typeof Worker !== "undefined") {
-            try {
-                const worker = new Worker(
-                    new URL("../../../lib/fft.worker.ts", import.meta.url),
-                    { type: "module" }
-                );
-
-                worker.onmessage = (e: MessageEvent<FftWorkerResponse>) => {
-                    const msg = e.data;
-                    if (msg.type === "INVERSE_SUCCESS") {
-                        if (msg.id === previewRequestIdRef.current) {
-                            const outCvs = previewCanvasRef.current;
-                            if (outCvs) {
-                                const ctx = outCvs.getContext("2d");
-                                if (ctx) {
-                                    const imgData = new ImageData(
-                                        msg.pixelData,
-                                        msg.outputW,
-                                        msg.outputH
-                                    );
-                                    ctx.putImageData(imgData, 0, 0);
-                                }
-                            }
-                        }
-                    } else if (msg.type === "ERROR") {
-                        // eslint-disable-next-line no-console
-                        console.error("FFT worker error:", msg.error);
-                    }
-                };
-
-                workerRef.current = worker;
-
-                return () => {
-                    worker.terminate();
-                    workerRef.current = null;
-                };
-            } catch (err) {
-                // eslint-disable-next-line no-console
-                console.warn(
-                    "FFT worker initialization failed, using sync fallback",
-                    err
-                );
-            }
-        }
-        return undefined;
-    }, [isActive, previewCanvasRef]);
+    const updateLivePreviewRef = useRef<() => void>(() => {});
 
     const doRedrawOverlay = useCallback(() => {
         const sc = spectrumCanvasRef.current;
@@ -176,15 +129,92 @@ export function useFftWorkspace({
                 fftResult.width,
                 fftResult.height
             );
-            const resultImage = processor.inverse(filteredData, w, h);
+            const raw = processor.inverseRaw(filteredData, w, h);
             const ctx = outCvs.getContext("2d");
-            if (ctx) ctx.putImageData(resultImage, 0, 0);
+            if (ctx) {
+                if (outCvs.width !== w || outCvs.height !== h) {
+                    outCvs.width = w;
+                    outCvs.height = h;
+                }
+                const imgData = new ImageData(new Uint8ClampedArray(raw), w, h);
+                ctx.putImageData(imgData, 0, 0);
+            }
         }
     }, [previewCanvasRef]);
 
+    updateLivePreviewRef.current = updateLivePreview;
+
+    // Initialize Web Worker when workspace is active, terminate when deactivated
+    useEffect(() => {
+        if (!isActive || typeof Worker === "undefined") return undefined;
+
+        try {
+            const worker = new Worker(
+                new URL("../../../lib/fft.worker.ts", import.meta.url),
+                { type: "module" }
+            );
+
+            const handleSuccess = (
+                msg: Extract<FftWorkerResponse, { type: "INVERSE_SUCCESS" }>
+            ) => {
+                if (msg.id !== previewRequestIdRef.current) return;
+                const outCvs = previewCanvasRef.current;
+                if (!outCvs) return;
+                const ctx = outCvs.getContext("2d");
+                if (!ctx) return;
+
+                if (
+                    outCvs.width !== msg.outputW ||
+                    outCvs.height !== msg.outputH
+                ) {
+                    outCvs.width = msg.outputW;
+                    outCvs.height = msg.outputH;
+                }
+                const imgData = new ImageData(
+                    new Uint8ClampedArray(msg.pixelData),
+                    msg.outputW,
+                    msg.outputH
+                );
+                ctx.putImageData(imgData, 0, 0);
+            };
+
+            worker.onmessage = (e: MessageEvent<FftWorkerResponse>) => {
+                const msg = e.data;
+                if (msg.type === "INVERSE_SUCCESS") {
+                    handleSuccess(msg);
+                } else if (msg.type === "ERROR") {
+                    // eslint-disable-next-line no-console
+                    console.error("FFT worker error:", msg.error);
+                    workerRef.current = null;
+                    updateLivePreviewRef.current();
+                }
+            };
+
+            worker.onerror = err => {
+                // eslint-disable-next-line no-console
+                console.error("FFT worker onerror:", err);
+                workerRef.current = null;
+                updateLivePreviewRef.current();
+            };
+
+            workerRef.current = worker;
+
+            return () => {
+                worker.terminate();
+                workerRef.current = null;
+            };
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn(
+                "FFT worker initialization failed, using sync fallback",
+                err
+            );
+            return undefined;
+        }
+    }, [isActive, previewCanvasRef]);
+
     const redrawAfterInit = useCallback(() => {
         doRedrawOverlay();
-        updateLivePreview();
 
         if (readyRedrawFrameRef.current !== null) {
             cancelAnimationFrame(readyRedrawFrameRef.current);
@@ -193,9 +223,8 @@ export function useFftWorkspace({
         readyRedrawFrameRef.current = requestAnimationFrame(() => {
             readyRedrawFrameRef.current = null;
             doRedrawOverlay();
-            updateLivePreview();
         });
-    }, [doRedrawOverlay, updateLivePreview]);
+    }, [doRedrawOverlay]);
 
     useEffect(() => {
         return () => {

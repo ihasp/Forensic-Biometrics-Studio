@@ -78,7 +78,7 @@ function fftRows(
 
         if (inverse) {
             fftInstance.inverseTransform(output, input);
-            for (let k = 0; k < w2; k++) data[off + k] = output[k]! / w;
+            for (let k = 0; k < w2; k++) data[off + k] = output[k]!;
         } else {
             fftInstance.transform(output, input);
             for (let k = 0; k < w2; k++) data[off + k] = output[k]!;
@@ -108,8 +108,8 @@ function fftCols(
             fftInstance.inverseTransform(colOut, colIn);
             for (let y = 0; y < h; y++) {
                 const i = 2 * (y * w + x);
-                data[i] = colOut[2 * y]! / h;
-                data[i + 1] = colOut[2 * y + 1]! / h;
+                data[i] = colOut[2 * y]!;
+                data[i + 1] = colOut[2 * y + 1]!;
             }
         } else {
             fftInstance.transform(colOut, colIn);
@@ -183,14 +183,6 @@ function computeSpectrum(data: Float32Array, w: number, h: number): Uint8Array {
     return spectrum;
 }
 
-/**
- * 2D FFT image processor.
- *
- * Converts an image to its frequency-domain representation,
- * allows masking frequency components, and reconstructs
- * the filtered image via inverse FFT.
- */
-
 export class ImageFFT {
     private rowFFT: InstanceType<typeof FFT>;
 
@@ -244,7 +236,6 @@ export class ImageFFT {
         };
     }
 
-    /** Zero-out frequency components where the mask overlay has red brush strokes. */
     applyMask(
         complexData: Float32Array,
         maskData: Uint8ClampedArray,
@@ -292,23 +283,14 @@ export class ImageFFT {
                         const idx = 2 * (rowOffset + x);
                         filtered[idx] = 0;
                         filtered[idx + 1] = 0;
+
+                        // Enforce conjugate symmetry immediately for zeroed frequencies
+                        const conjY = (this.height - y) % this.height;
+                        const conjX = (this.width - x) % this.width;
+                        const conjIdx = 2 * (conjY * this.width + conjX);
+                        filtered[conjIdx] = 0;
+                        filtered[conjIdx + 1] = 0;
                     }
-                }
-            }
-        }
-
-        // Enforce conjugate symmetry mathematically to ensure spatial result is strictly Real.
-        // This removes imaginary-phase ringing ("cuts") around drawn boundaries.
-        for (let y = 0; y < this.height; y++) {
-            const conjY = (this.height - y) % this.height;
-            for (let x = 0; x < this.width; x++) {
-                const idx = 2 * (y * this.width + x);
-                const conjX = (this.width - x) % this.width;
-                const conjIdx = 2 * (conjY * this.width + conjX);
-
-                if (filtered[idx] === 0 && filtered[idx + 1] === 0) {
-                    filtered[conjIdx] = 0;
-                    filtered[conjIdx + 1] = 0;
                 }
             }
         }
@@ -337,7 +319,15 @@ export class ImageFFT {
         outputH: number
     ): ImageData {
         const raw = this.inverseRaw(complexData, outputW, outputH);
-        return new ImageData(raw, outputW, outputH);
+        if (typeof ImageData !== "undefined") {
+            return new ImageData(raw, outputW, outputH);
+        }
+        return {
+            data: raw,
+            width: outputW,
+            height: outputH,
+            colorSpace: "srgb",
+        } as unknown as ImageData;
     }
 
     /** Scale complex result to output dimensions and normalize to 8-bit grayscale safely. */

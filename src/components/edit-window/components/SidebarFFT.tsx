@@ -9,7 +9,7 @@ import { ICON } from "@/lib/utils/const";
 import { UseFftWorkspaceReturn } from "../hooks/useFftWorkspace";
 
 const TOOL_BTN_CLASS =
-    "flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md transition-all text-xs font-medium";
+    "flex-1 min-w-0 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md transition-all text-xs font-medium";
 const TOOL_BTN_ACTIVE_CLASS = "bg-background shadow-sm text-foreground";
 const TOOL_BTN_INACTIVE_CLASS =
     "text-muted-foreground hover:bg-secondary/80 hover:text-secondary-foreground";
@@ -63,6 +63,7 @@ export function SidebarFFT({
                                         onClick={() =>
                                             fft.setInteractionMode("draw")
                                         }
+                                        title={t("Draw", { ns: "keywords" })}
                                         className={cn(
                                             TOOL_BTN_CLASS,
                                             fft.interactionMode === "draw"
@@ -70,14 +71,17 @@ export function SidebarFFT({
                                                 : TOOL_BTN_INACTIVE_CLASS
                                         )}
                                     >
-                                        <Edit3 className="w-3.5 h-3.5" />
-                                        {t("Draw", { ns: "keywords" })}
+                                        <Edit3 className="w-3.5 h-3.5 shrink-0" />
+                                        <span className="truncate">
+                                            {t("Draw", { ns: "keywords" })}
+                                        </span>
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() =>
                                             fft.setInteractionMode("erase")
                                         }
+                                        title={t("Eraser", { ns: "keywords" })}
                                         className={cn(
                                             TOOL_BTN_CLASS,
                                             fft.interactionMode === "erase"
@@ -85,14 +89,17 @@ export function SidebarFFT({
                                                 : TOOL_BTN_INACTIVE_CLASS
                                         )}
                                     >
-                                        <Eraser className="w-3.5 h-3.5" />
-                                        {t("Eraser", { ns: "keywords" })}
+                                        <Eraser className="w-3.5 h-3.5 shrink-0" />
+                                        <span className="truncate">
+                                            {t("Eraser", { ns: "keywords" })}
+                                        </span>
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() =>
                                             fft.setInteractionMode("pan")
                                         }
+                                        title={t("Pan", { ns: "keywords" })}
                                         className={cn(
                                             TOOL_BTN_CLASS,
                                             fft.interactionMode === "pan"
@@ -100,8 +107,10 @@ export function SidebarFFT({
                                                 : TOOL_BTN_INACTIVE_CLASS
                                         )}
                                     >
-                                        <Hand className="w-3.5 h-3.5" />
-                                        {t("Pan", { ns: "keywords" })}
+                                        <Hand className="w-3.5 h-3.5 shrink-0" />
+                                        <span className="truncate">
+                                            {t("Pan", { ns: "keywords" })}
+                                        </span>
                                     </button>
                                 </div>
                             </div>

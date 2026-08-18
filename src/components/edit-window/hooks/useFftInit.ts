@@ -149,6 +149,25 @@ export function useFftInit({
                 pc.height = fftH;
                 pc.style.pointerEvents = "none";
 
+                const pcCtx = pc.getContext("2d");
+                if (pcCtx) {
+                    const grayData = new ImageData(fftW, fftH);
+                    const srcData = imageData.data;
+                    const dstData = grayData.data;
+                    for (let i = 0; i < srcData.length; i += 4) {
+                        const gray = Math.round(
+                            (srcData[i] ?? 0) * 0.299 +
+                                (srcData[i + 1] ?? 0) * 0.587 +
+                                (srcData[i + 2] ?? 0) * 0.114
+                        );
+                        dstData[i] = gray;
+                        dstData[i + 1] = gray;
+                        dstData[i + 2] = gray;
+                        dstData[i + 3] = 255;
+                    }
+                    pcCtx.putImageData(grayData, 0, 0);
+                }
+
                 onReady();
                 onStatusChange("ready");
             } catch (err) {

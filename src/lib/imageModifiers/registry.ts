@@ -148,12 +148,6 @@ export const MODIFIER_REGISTRY: ModifierDefinition[] = [
         create: createContrastModifier,
     },
     {
-        type: "fft",
-        labelKey: "FFT Filter",
-        group: "default",
-        create: createFftModifier,
-    },
-    {
         type: "gbfen",
         labelKey: "GBFEN",
         group: "enhancement",

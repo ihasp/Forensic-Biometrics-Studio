@@ -213,7 +213,7 @@ function ImagePanes({
                     <>
                         <button
                             type="button"
-                            className="absolute inset-0 z-0 cursor-grab active:cursor-grabbing bg-transparent border-0 p-0"
+                            className="absolute inset-0 z-20 cursor-grab active:cursor-grabbing bg-transparent border-0 p-0"
                             aria-label="FFT preview with zoom and pan controls"
                             onWheel={onRightWheel}
                             onMouseDown={onRightMouseDown}

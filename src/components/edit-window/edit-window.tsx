@@ -180,19 +180,23 @@ export function EditWindow() {
         onMiddleDrag: left.handleMiddleDrag,
     });
 
-    useSyncedElement(imageRef, imageRef, containerRef, [displayUrl]);
-    useSyncedElement(imageRef, canvasRef, containerRef, [
+    useSyncedElement(imageRef, imageRef, containerRef, {
         displayUrl,
         isFftActive,
-    ]);
-    useSyncedElement(imageRef, dpiCanvasRef, containerRef, [displayUrl]);
-    useSyncedElement(
-        imageRef,
-        fftCanvasRef,
-        fftContainerRef,
-        [displayUrl, isFftActive],
-        { zIndex: "11" }
-    );
+    });
+    useSyncedElement(imageRef, canvasRef, containerRef, {
+        displayUrl,
+        isFftActive,
+    });
+    useSyncedElement(imageRef, dpiCanvasRef, containerRef, {
+        displayUrl,
+        isFftActive,
+    });
+    useSyncedElement(imageRef, fftCanvasRef, fftContainerRef, {
+        displayUrl,
+        isFftActive,
+        extraStyles: { zIndex: "11" },
+    });
 
     const loadImage = useCallback(
         async (path: string) => {
@@ -503,6 +507,8 @@ export function EditWindow() {
                     if (m.type === "snfen") return "SNFEN";
                     if (m.type === "brightness") return "brightness";
                     if (m.type === "contrast") return "contrast";
+                    if (m.type === "levels") return "levels";
+                    if (m.type === "curves") return "curves";
                     return "fft";
                 })
                 .join("_");
@@ -629,7 +635,7 @@ export function EditWindow() {
                     )}
                 </div>
 
-                <div className="w-64 border-l border-border/30 bg-background/50 backdrop-blur-md flex flex-col h-[calc(100vh-56px)]">
+                <div className="w-72 border-l border-border/30 bg-background/50 backdrop-blur-md flex flex-col h-[calc(100vh-56px)]">
                     <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
                         {imageName && (
                             <div className="flex flex-col gap-1">

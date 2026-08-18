@@ -109,7 +109,7 @@ const d: Dictionary = {
     "Color green": "Zielony",
     "Report title": "Tytuł raportu",
     Draw: "Rysuj",
-    Pan: "Przesuwaj",
+    Pan: "Przesuń",
     Eraser: "Gumka",
     Shape: "Kształt",
     Round: "Okrągły",

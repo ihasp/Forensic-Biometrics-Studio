@@ -45,8 +45,15 @@ export type FftWorkerResponse =
           error: string;
       };
 
-/* eslint-disable no-restricted-globals, @typescript-eslint/no-explicit-any */
-(self as any).onmessage = (e: MessageEvent<FftWorkerRequest>) => {
+declare const self: {
+    onmessage: ((e: MessageEvent<FftWorkerRequest>) => void) | null;
+    postMessage(
+        message: FftWorkerResponse,
+        transfer?: (ArrayBuffer | MessagePort)[]
+    ): void;
+};
+
+self.onmessage = (e: MessageEvent<FftWorkerRequest>) => {
     const msg = e.data;
     try {
         if (msg.type === "FORWARD") {
@@ -59,7 +66,7 @@ export type FftWorkerResponse =
 
             const { complexData, spectrum, width, height } = result;
 
-            (self as any).postMessage(
+            self.postMessage(
                 {
                     id: msg.id,
                     type: "FORWARD_SUCCESS",
@@ -67,7 +74,7 @@ export type FftWorkerResponse =
                     width,
                     height,
                     spectrum,
-                } satisfies FftWorkerResponse,
+                },
                 [complexData.buffer, spectrum.buffer]
             );
         } else if (msg.type === "INVERSE") {
@@ -78,29 +85,28 @@ export type FftWorkerResponse =
                 msg.maskWidth,
                 msg.maskHeight
             );
-            const resultImage = processor.inverse(
+            const pixelData = processor.inverseRaw(
                 filteredData,
                 msg.outputW,
                 msg.outputH
             );
 
-            const pixelData = resultImage.data;
-            (self as any).postMessage(
+            self.postMessage(
                 {
                     id: msg.id,
                     type: "INVERSE_SUCCESS",
                     pixelData,
                     outputW: msg.outputW,
                     outputH: msg.outputH,
-                } satisfies FftWorkerResponse,
+                },
                 [pixelData.buffer]
             );
         }
     } catch (err) {
-        (self as any).postMessage({
+        self.postMessage({
             id: msg.id,
             type: "ERROR",
             error: err instanceof Error ? err.message : String(err),
-        } satisfies FftWorkerResponse);
+        });
     }
 };

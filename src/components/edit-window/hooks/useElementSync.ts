@@ -1,4 +1,4 @@
-import React, { DependencyList, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 
 export function useElementSync() {
     const syncContainedElement = useCallback(
@@ -38,14 +38,22 @@ export function useElementSync() {
     return { syncContainedElement };
 }
 
+export interface SyncedElementOptions {
+    displayUrl?: string | null;
+    isFftActive?: boolean;
+    extraStyles?: Partial<CSSStyleDeclaration>;
+}
+
 export function useSyncedElement(
     sourceRef: React.RefObject<HTMLImageElement | null>,
     targetRef: React.RefObject<HTMLElement | null>,
     containerRef: React.RefObject<HTMLElement | null>,
-    dependencies: DependencyList = [],
-    extraStyles: Partial<CSSStyleDeclaration> = {}
+    options: SyncedElementOptions = {}
 ) {
+    const { displayUrl, isFftActive, extraStyles } = options;
     const { syncContainedElement } = useElementSync();
+    const extraStylesRef = useRef(extraStyles);
+    extraStylesRef.current = extraStyles;
 
     useEffect(() => {
         const source = sourceRef.current;
@@ -58,22 +66,12 @@ export function useSyncedElement(
             requestAnimationFrame(() => {
                 if (!source || !target || !container) return;
 
-                // If target is a canvas, sync its internal resolution as well
-                if (target instanceof HTMLCanvasElement) {
-                    if (target.width !== source.naturalWidth) {
-                        target.width = source.naturalWidth;
-                    }
-                    if (target.height !== source.naturalHeight) {
-                        target.height = source.naturalHeight;
-                    }
-                }
-
                 syncContainedElement(
                     target,
                     container,
                     source.naturalWidth,
                     source.naturalHeight,
-                    extraStyles
+                    extraStylesRef.current
                 );
             });
         };
@@ -88,5 +86,12 @@ export function useSyncedElement(
             resizeObserver.disconnect();
             source.removeEventListener("load", sync);
         };
-    }, [syncContainedElement, ...dependencies]);
+    }, [
+        containerRef,
+        displayUrl,
+        isFftActive,
+        sourceRef,
+        syncContainedElement,
+        targetRef,
+    ]);
 }
