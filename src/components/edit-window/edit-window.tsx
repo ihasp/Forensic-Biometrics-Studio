@@ -26,13 +26,15 @@ import { useSettingsSync } from "@/lib/hooks/useSettingsSync";
 import ImageDpiControls from "@/components/edit-window/dpi/image-dpi-controls";
 import {
     AnyModifier,
-    EnhancementModifier,
     EnhancementParams,
+    FftModifier,
+    FftParams,
     ModifierType,
     isEnhancementModifier,
 } from "@/lib/imageModifiers/types";
 import {
     MODIFIER_REGISTRY,
+    createFftModifier,
     buildCssFilter,
 } from "@/lib/imageModifiers/registry";
 import { applyPipelineToImage } from "@/lib/imageModifiers/pipeline";
@@ -124,6 +126,9 @@ export function EditWindow() {
     const [editingModifierId, setEditingModifierId] = useState<string | null>(
         null
     );
+    const [editingFftModifierId, setEditingFftModifierId] = useState<
+        string | null
+    >(null);
     const [isFftActive, setIsFftActive] = useState<boolean>(false);
 
     const imageRef = useRef<HTMLImageElement>(null);
@@ -145,35 +150,96 @@ export function EditWindow() {
 
     const cssFilter = buildCssFilter(modifiers);
 
-    const activeEnhancement = [...modifiers]
+    const activeFftModifier = modifiers.find(
+        (m): m is FftModifier =>
+            m.id === editingFftModifierId && m.type === "fft"
+    );
+
+    // Find the active raster modifier providing the current base image
+    const activeRasterModifier = [...modifiers]
         .reverse()
         .find(
-            (m): m is EnhancementModifier =>
-                isEnhancementModifier(m) &&
+            m =>
                 m.enabled &&
-                m.params.status === "ready" &&
-                Boolean(m.params.runtimeOutputUrl)
+                (!isFftActive || m.id !== editingFftModifierId) &&
+                ((isEnhancementModifier(m) &&
+                    m.params.status === "ready" &&
+                    Boolean(m.params.runtimeOutputUrl)) ||
+                    (m.type === "fft" &&
+                        (!isFftActive || m.id !== editingFftModifierId) &&
+                        Boolean(m.params.runtimeOutputUrl)))
         );
 
     const displayUrl =
-        activeEnhancement?.params.runtimeOutputUrl ?? originalUrl;
+        (activeRasterModifier && isEnhancementModifier(activeRasterModifier)
+            ? activeRasterModifier.params.runtimeOutputUrl
+            : activeRasterModifier?.type === "fft"
+              ? (activeRasterModifier as FftModifier).params.runtimeOutputUrl
+              : null) ?? originalUrl;
 
     const handleFftApply = useCallback(
-        (dataUrl: string) => {
-            setOriginalUrl(dataUrl);
+        (dataUrl: string, params?: Partial<FftParams>) => {
+            if (editingFftModifierId) {
+                setModifiers(prev =>
+                    prev.map(m =>
+                        m.id === editingFftModifierId
+                            ? ({
+                                  ...m,
+                                  enabled: true,
+                                  params: {
+                                      ...m.params,
+                                      ...params,
+                                      runtimeOutputUrl: dataUrl,
+                                  },
+                              } as FftModifier)
+                            : m
+                    )
+                );
+            } else {
+                const newMod = createFftModifier();
+                newMod.params = {
+                    ...newMod.params,
+                    ...params,
+                    runtimeOutputUrl: dataUrl,
+                };
+                setModifiers(prev => [...prev, newMod]);
+            }
+            setEditingFftModifierId(null);
+            setIsFftActive(false);
             setPreviewImageUrl(null);
             resetLeft();
             resetRight();
-            toast.success(t("Image saved successfully", { ns: "tooltip" }));
+            toast.success(
+                t("FFT Filter applied", {
+                    ns: "tooltip",
+                    defaultValue: "FFT filter applied",
+                })
+            );
         },
-        [resetLeft, resetRight, t]
+        [editingFftModifierId, resetLeft, resetRight, t]
     );
+
+    const handleCancelFft = useCallback(() => {
+        if (editingFftModifierId) {
+            const mod = modifiers.find(m => m.id === editingFftModifierId);
+            if (mod && mod.type === "fft" && !mod.params.runtimeOutputUrl) {
+                setModifiers(prev =>
+                    prev.filter(m => m.id !== editingFftModifierId)
+                );
+            }
+        }
+        setEditingFftModifierId(null);
+        setIsFftActive(false);
+        resetLeft();
+        resetRight();
+    }, [editingFftModifierId, modifiers, resetLeft, resetRight]);
 
     const fft = useFftWorkspace({
         imageRef,
         spectrumCanvasRef: canvasRef,
         previewCanvasRef: fftCanvasRef,
         isActive: isFftActive,
+        initialParams: activeFftModifier?.params,
         onToggleActive: setIsFftActive,
         onApply: handleFftApply,
         onWheel: left.handleWheel,
@@ -423,10 +489,30 @@ export function EditWindow() {
                 return;
             }
 
+            if (type === "fft") {
+                setEditingFftModifierId(newMod.id);
+                setIsFftActive(true);
+                return;
+            }
+
             // setTimeout so the DropdownMenu close event doesn't immediately dismiss the dialog
             setTimeout(() => setEditingModifierId(newMod.id), 50);
         },
         [runEnhancement]
+    );
+
+    const handleEditModifier = useCallback(
+        (id: string) => {
+            const target = modifiers.find(m => m.id === id);
+            if (!target) return;
+            if (target.type === "fft") {
+                setEditingFftModifierId(id);
+                setIsFftActive(true);
+                return;
+            }
+            setEditingModifierId(id);
+        },
+        [modifiers]
     );
 
     const handleUpdateModifier = useCallback(
@@ -445,13 +531,27 @@ export function EditWindow() {
     const handleRemoveModifier = useCallback((id: string) => {
         setModifiers(prev => {
             const target = prev.find(m => m.id === id);
-            if (target && isEnhancementModifier(target)) {
-                const url = target.params.runtimeOutputUrl;
-                if (url) URL.revokeObjectURL(url);
+            if (target) {
+                if (isEnhancementModifier(target)) {
+                    const url = target.params.runtimeOutputUrl;
+                    if (url) URL.revokeObjectURL(url);
+                } else if (
+                    target.type === "fft" &&
+                    target.params.runtimeOutputUrl?.startsWith("blob:")
+                ) {
+                    URL.revokeObjectURL(target.params.runtimeOutputUrl);
+                }
             }
             return prev.filter(m => m.id !== id);
         });
         setEditingModifierId(prev => (prev === id ? null : prev));
+        setEditingFftModifierId(prev => {
+            if (prev === id) {
+                setIsFftActive(false);
+                return null;
+            }
+            return prev;
+        });
     }, []);
 
     const handleReorderModifiers = useCallback(
@@ -662,21 +762,32 @@ export function EditWindow() {
                             <h3 className="text-sm font-semibold text-muted-foreground">
                                 {t("Adjustments", { ns: "keywords" })}
                             </h3>
-                            <ModifierList
-                                modifiers={modifiers}
-                                onEdit={setEditingModifierId}
-                                onToggle={handleToggleModifier}
-                                onRemove={handleRemoveModifier}
-                                onReorder={handleReorderModifiers}
-                            />
-                            <AddModifierButton
-                                onAdd={handleAddModifier}
-                                disabled={!originalUrl || isFftActive}
-                            />
-                            {enhancing && (
-                                <p className="text-xs text-primary animate-pulse text-center">
-                                    {t("Enhancing image...", { ns: "tooltip" })}
-                                </p>
+                            {!isFftActive ? (
+                                <>
+                                    <ModifierList
+                                        modifiers={modifiers}
+                                        onEdit={handleEditModifier}
+                                        onToggle={handleToggleModifier}
+                                        onRemove={handleRemoveModifier}
+                                        onReorder={handleReorderModifiers}
+                                    />
+                                    <AddModifierButton
+                                        onAdd={handleAddModifier}
+                                        disabled={!originalUrl || isFftActive}
+                                    />
+                                    {enhancing && (
+                                        <p className="text-xs text-primary animate-pulse text-center">
+                                            {t("Enhancing image...", {
+                                                ns: "tooltip",
+                                            })}
+                                        </p>
+                                    )}
+                                </>
+                            ) : (
+                                <SidebarFFT
+                                    fft={fft}
+                                    onCancel={handleCancelFft}
+                                />
                             )}
                         </div>
 
@@ -692,14 +803,6 @@ export function EditWindow() {
                                 disabled={isFftActive}
                             />
                         </div>
-
-                        <div className="border-t border-border/30" />
-
-                        <SidebarFFT
-                            isFftActive={isFftActive}
-                            setIsFftActive={setIsFftActive}
-                            fft={fft}
-                        />
                     </div>
 
                     <div className="p-4 border-t border-border/30 bg-background">

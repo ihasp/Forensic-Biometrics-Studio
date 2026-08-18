@@ -3,6 +3,7 @@ import {
     type FftWorkerRequest,
     type FftWorkerResponse,
 } from "@/lib/fft.worker";
+import { FftParams } from "@/lib/imageModifiers/types";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { redrawFftOverlay } from "../fft/fftCanvasUtils";
 import { BrushShape, FftStatus, InteractionMode } from "../fft/fftTypes";
@@ -14,8 +15,9 @@ export interface UseFftWorkspaceProps {
     spectrumCanvasRef: RefObject<HTMLCanvasElement | null>;
     previewCanvasRef: RefObject<HTMLCanvasElement | null>;
     isActive: boolean;
+    initialParams?: Partial<FftParams> | null;
     onToggleActive: (active: boolean) => void;
-    onApply: (dataUrl: string) => void;
+    onApply: (dataUrl: string, params?: Partial<FftParams>) => void;
     onWheel?: (e: WheelEvent) => void;
     onMiddleDrag?: (dx: number, dy: number) => void;
 }
@@ -37,16 +39,30 @@ export function useFftWorkspace({
     spectrumCanvasRef,
     previewCanvasRef,
     isActive,
+    initialParams,
     onToggleActive,
     onApply,
     onWheel,
     onMiddleDrag,
 }: UseFftWorkspaceProps): UseFftWorkspaceReturn {
-    const [brushSize, setBrushSize] = useState(7);
-    const [brushShape, setBrushShape] = useState<BrushShape>("circle");
+    const [brushSize, setBrushSize] = useState(initialParams?.brushSize ?? 7);
+    const [brushShape, setBrushShape] = useState<BrushShape>(
+        initialParams?.brushShape ?? "circle"
+    );
     const [interactionMode, setInteractionMode] =
         useState<InteractionMode>("draw");
     const [status, setStatus] = useState<FftStatus>("idle");
+
+    useEffect(() => {
+        if (isActive && initialParams) {
+            if (initialParams.brushSize !== undefined) {
+                setBrushSize(initialParams.brushSize);
+            }
+            if (initialParams.brushShape !== undefined) {
+                setBrushShape(initialParams.brushShape);
+            }
+        }
+    }, [isActive, initialParams]);
 
     // Shared mutable refs — owned here, passed by reference to sub-hooks
     const processorRef = useRef<ImageFFT | null>(null);
@@ -55,7 +71,15 @@ export function useFftWorkspace({
     const specCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const originalDimsRef = useRef({ w: 0, h: 0 });
     const fftDimsRef = useRef({ w: 0, h: 0 });
+    const initialMaskCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const readyRedrawFrameRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        if (isActive) {
+            // eslint-disable-next-line no-underscore-dangle
+            initialMaskCanvasRef.current = initialParams?._maskCanvas ?? null;
+        }
+    }, [isActive, initialParams]);
 
     const workerRef = useRef<Worker | null>(null);
     const previewRequestIdRef = useRef<number>(0);
@@ -72,6 +96,7 @@ export function useFftWorkspace({
         specCanvasRef,
         originalDimsRef,
         fftDimsRef,
+        initialMaskCanvasRef,
     };
 
     const updateLivePreviewRef = useRef<() => void>(() => {});
@@ -215,6 +240,7 @@ export function useFftWorkspace({
 
     const redrawAfterInit = useCallback(() => {
         doRedrawOverlay();
+        updateLivePreview();
 
         if (readyRedrawFrameRef.current !== null) {
             cancelAnimationFrame(readyRedrawFrameRef.current);
@@ -223,8 +249,9 @@ export function useFftWorkspace({
         readyRedrawFrameRef.current = requestAnimationFrame(() => {
             readyRedrawFrameRef.current = null;
             doRedrawOverlay();
+            updateLivePreview();
         });
-    }, [doRedrawOverlay]);
+    }, [doRedrawOverlay, updateLivePreview]);
 
     useEffect(() => {
         return () => {
@@ -282,7 +309,24 @@ export function useFftWorkspace({
             } else {
                 dataUrl = outCvs.toDataURL("image/png");
             }
-            onApply(dataUrl);
+
+            let clonedMaskCanvas: HTMLCanvasElement | null = null;
+            if (maskCanvasRef.current) {
+                clonedMaskCanvas = document.createElement("canvas");
+                clonedMaskCanvas.width = maskCanvasRef.current.width;
+                clonedMaskCanvas.height = maskCanvasRef.current.height;
+                clonedMaskCanvas
+                    .getContext("2d")
+                    ?.drawImage(maskCanvasRef.current, 0, 0);
+            }
+
+            onApply(dataUrl, {
+                _maskCanvas: clonedMaskCanvas,
+                _processor: processorRef.current,
+                _fftResult: fftResultRef.current,
+                brushSize: brushSizeRef.current,
+                brushShape: brushShapeRef.current,
+            });
             onToggleActive(false);
         }, 50);
     }, [onApply, onToggleActive, previewCanvasRef]);

@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
+/* eslint-disable security/detect-object-injection */
 import { ImageFFT, type FFTResult } from "@/lib/fftProcessor";
 import React, { RefObject, useEffect } from "react";
 import { FftStatus } from "../fft/fftTypes";
@@ -14,6 +15,7 @@ export interface FftRefs {
     specCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
     originalDimsRef: React.MutableRefObject<{ w: number; h: number }>;
     fftDimsRef: React.MutableRefObject<{ w: number; h: number }>;
+    initialMaskCanvasRef?: React.MutableRefObject<HTMLCanvasElement | null>;
 }
 
 export function useFftInit({
@@ -42,6 +44,7 @@ export function useFftInit({
         specCanvasRef,
         originalDimsRef,
         fftDimsRef,
+        initialMaskCanvasRef,
     } = refs;
 
     useEffect(() => {
@@ -123,6 +126,18 @@ export function useFftInit({
                 const maskCvs = document.createElement("canvas");
                 maskCvs.width = result.width;
                 maskCvs.height = result.height;
+                if (initialMaskCanvasRef?.current) {
+                    const maskCtx = maskCvs.getContext("2d");
+                    if (maskCtx) {
+                        maskCtx.drawImage(
+                            initialMaskCanvasRef.current,
+                            0,
+                            0,
+                            result.width,
+                            result.height
+                        );
+                    }
+                }
                 maskCanvasRef.current = maskCvs;
 
                 const specCvs = document.createElement("canvas");
@@ -189,6 +204,7 @@ export function useFftInit({
         specCanvasRef,
         originalDimsRef,
         fftDimsRef,
+        initialMaskCanvasRef,
         onReady,
         onStatusChange,
         onToggleActive,
