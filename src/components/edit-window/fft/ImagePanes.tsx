@@ -224,7 +224,7 @@ function ImagePanes({
                         />
                         <canvas
                             ref={previewCanvasRef}
-                            className="max-w-full max-h-full z-10"
+                            className="absolute pointer-events-none z-10"
                             style={{
                                 opacity: isFftReady ? 1 : 0.35,
                                 transform: `translate(${rightPan.x}px, ${rightPan.y}px) scale(${rightPanZoom})`,
