@@ -108,6 +108,13 @@ const d: Dictionary = {
     "Color red": "Czerwony",
     "Color green": "Zielony",
     "Report title": "Tytuł raportu",
+    Draw: "Rysuj",
+    Pan: "Przesuwaj",
+    Eraser: "Gumka",
+    Shape: "Kształt",
+    Round: "Okrągły",
+    Oval: "Owalny",
+    "Initializing...": "Inicjalizowanie...",
 };
 
 export default d;

@@ -113,6 +113,13 @@ export type i18nKeywords = Recordify<
     | "Color red"
     | "Color green"
     | "Report title"
+    | "Draw"
+    | "Pan"
+    | "Eraser"
+    | "Shape"
+    | "Round"
+    | "Oval"
+    | "Initializing..."
 >;
 
 export type i18nDescription = Recordify<
