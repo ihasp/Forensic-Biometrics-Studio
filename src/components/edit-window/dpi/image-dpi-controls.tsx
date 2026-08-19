@@ -34,6 +34,12 @@ export default function ImageDpiControls({
         if (!canvas) return;
 
         if (active && img) {
+            if (img.naturalWidth && canvas.width !== img.naturalWidth) {
+                canvas.width = img.naturalWidth;
+            }
+            if (img.naturalHeight && canvas.height !== img.naturalHeight) {
+                canvas.height = img.naturalHeight;
+            }
             if (!handlerRef.current) {
                 handlerRef.current = new ImageDpiCalibration(img, canvas);
             }

@@ -257,6 +257,7 @@ export function EditWindow() {
     useSyncedElement(imageRef, dpiCanvasRef, containerRef, {
         displayUrl,
         isFftActive,
+        syncDimensions: true,
     });
     useSyncedElement(imageRef, fftCanvasRef, fftContainerRef, {
         displayUrl,

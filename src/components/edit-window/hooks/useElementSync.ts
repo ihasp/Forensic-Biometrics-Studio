@@ -1,47 +1,57 @@
+/* eslint-disable no-param-reassign */
 import React, { useCallback, useEffect, useRef } from "react";
 
-export function useElementSync() {
-    const syncContainedElement = useCallback(
-        (
-            element: HTMLElement,
-            container: HTMLElement,
-            naturalWidth: number,
-            naturalHeight: number,
-            extraStyles: Partial<CSSStyleDeclaration> = {}
-        ) => {
-            if (!naturalWidth || !naturalHeight) return;
+export function syncContainedElement(
+    element: HTMLElement,
+    container: HTMLElement,
+    naturalWidth: number,
+    naturalHeight: number,
+    extraStyles: Partial<CSSStyleDeclaration> = {},
+    syncDimensions: boolean = false
+) {
+    if (!naturalWidth || !naturalHeight) return;
 
-            const { clientWidth, clientHeight } = container;
-            if (!clientWidth || !clientHeight) return;
+    const { clientWidth, clientHeight } = container;
+    if (!clientWidth || !clientHeight) return;
 
-            const scale = Math.min(
-                clientWidth / naturalWidth,
-                clientHeight / naturalHeight
-            );
-            const width = Math.max(1, Math.round(naturalWidth * scale));
-            const height = Math.max(1, Math.round(naturalHeight * scale));
-
-            Object.assign(element.style, {
-                width: `${width}px`,
-                height: `${height}px`,
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                marginTop: `-${height / 2}px`,
-                marginLeft: `-${width / 2}px`,
-                ...extraStyles,
-            });
-        },
-        []
+    const scale = Math.min(
+        clientWidth / naturalWidth,
+        clientHeight / naturalHeight
     );
+    const width = Math.max(1, Math.round(naturalWidth * scale));
+    const height = Math.max(1, Math.round(naturalHeight * scale));
 
-    return { syncContainedElement };
+    if (syncDimensions && element instanceof HTMLCanvasElement) {
+        if (element.width !== naturalWidth) {
+            element.width = naturalWidth;
+        }
+        if (element.height !== naturalHeight) {
+            element.height = naturalHeight;
+        }
+    }
+
+    Object.assign(element.style, {
+        width: `${width}px`,
+        height: `${height}px`,
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        marginTop: `-${height / 2}px`,
+        marginLeft: `-${width / 2}px`,
+        ...extraStyles,
+    });
+}
+
+export function useElementSync() {
+    const syncCallback = useCallback(syncContainedElement, []);
+    return { syncContainedElement: syncCallback };
 }
 
 export interface SyncedElementOptions {
     displayUrl?: string | null;
     isFftActive?: boolean;
     extraStyles?: Partial<CSSStyleDeclaration>;
+    syncDimensions?: boolean;
 }
 
 export function useSyncedElement(
@@ -50,7 +60,7 @@ export function useSyncedElement(
     containerRef: React.RefObject<HTMLElement | null>,
     options: SyncedElementOptions = {}
 ) {
-    const { displayUrl, isFftActive, extraStyles } = options;
+    const { displayUrl, isFftActive, extraStyles, syncDimensions } = options;
     const { syncContainedElement } = useElementSync();
     const extraStylesRef = useRef(extraStyles);
     extraStylesRef.current = extraStyles;
@@ -71,7 +81,8 @@ export function useSyncedElement(
                     container,
                     source.naturalWidth,
                     source.naturalHeight,
-                    extraStylesRef.current
+                    extraStylesRef.current,
+                    syncDimensions
                 );
             });
         };
@@ -79,7 +90,7 @@ export function useSyncedElement(
         const resizeObserver = new ResizeObserver(sync);
         resizeObserver.observe(container);
 
-        if (source.complete) sync();
+        if (source.complete && source.naturalWidth > 0) sync();
         source.addEventListener("load", sync);
 
         return () => {
@@ -93,5 +104,6 @@ export function useSyncedElement(
         sourceRef,
         syncContainedElement,
         targetRef,
+        syncDimensions,
     ]);
 }

@@ -58,7 +58,8 @@ const d: Dictionary = {
     "Black Point": "Punkt czerni",
     "White Point": "Punkt bieli",
     "Gamma (Midtones)": "Gamma (Półcienie)",
-    "Curves (Click: Add, Right-click: Remove)": "Krzywe (Kliknij: Dodaj, Prawy przycisk: Usuń)",
+    "Curves (Click: Add, Right-click: Remove)":
+        "Krzywe (Kliknij: Dodaj, Prawy przycisk: Usuń)",
     "Reset Zoom": "Resetuj powiększenie",
     ImageLoadPermissionError:
         "Edytowany obraz został zapisany, ale nie można go załadować z powodu ograniczeń dostępności ścieżki. Spróbuj załadować go ręcznie.",
@@ -70,6 +71,7 @@ const d: Dictionary = {
     "Reset rotation": "Zresetuj rotację do 0°",
     "Synchronize rotation": "Synchronizuj rotację między widokami",
     "FFT Filter": "Filtr FFT",
+    "FFT Filter applied": "Zastosowano filtr FFT",
     "Paint over bright spots to filter them out":
         "Zamaluj jasne punkty, aby je odfiltrować",
     "Preview ready. Return to edit or save.":
